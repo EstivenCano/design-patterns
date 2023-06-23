@@ -5,13 +5,13 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen max-w-7xl flex-col items-center py-8 px-10'>
+    <main className='flex min-h-screen max-w-7xl flex-col items-center py-4 md:py-8 md:px-10 px-4'>
       <h1 className='text-primary text-2xl font-bold'>Desing Patterns</h1>
       <p>A short demonstration</p>
       {patterns.map(({ category, list }) => (
         <section
           key={category}
-          className='w-full flex flex-wrap gap-4 my-4 justify-center md:justify-normal py-4'>
+          className='w-full flex flex-wrap gap-4 my-4 justify-center py-4'>
           <h2 className='text-xl font-bold w-full capitalize'>
             {category.replaceAll("-", " ")}
           </h2>

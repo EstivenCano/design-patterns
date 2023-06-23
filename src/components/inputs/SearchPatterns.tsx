@@ -16,9 +16,16 @@ import { Badge } from "../ui/badge";
 import { patterns } from "@/lib/constants";
 import { Fragment } from "react";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 export const SearchPatterns = () => {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
+
+  const handleNavigate = (route: string) => () => {
+    router.push(route);
+    setOpen(false);
+  };
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -34,7 +41,7 @@ export const SearchPatterns = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className='inline-flex items-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground px-4 py-2 relative min-w-[200px] w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64'>
+        <Button className='inline-flex items-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground px-4 py-2 relative min-w-[200px] w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64'>
           <p className='whitespace-nowrap'>Search a pattern...</p>
           <Badge variant='secondary' className='absolute right-2 top-2 gap-0.5'>
             <CommandIcon size={12} />
@@ -53,7 +60,11 @@ export const SearchPatterns = () => {
                   className='capitalize'
                   heading={category.replaceAll("-", " ")}>
                   {list.map((pattern) => (
-                    <CommandItem key={pattern.id}>{pattern.name}</CommandItem>
+                    <CommandItem
+                      key={pattern.id}
+                      onSelect={handleNavigate(pattern.link)}>
+                      {pattern.name}
+                    </CommandItem>
                   ))}
                 </CommandGroup>
                 <CommandSeparator />
