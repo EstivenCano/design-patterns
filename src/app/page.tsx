@@ -11,13 +11,13 @@ export default function Home() {
       {patterns.map(({ category, list }) => (
         <section
           key={category}
-          className='w-full flex flex-wrap gap-2 my-4 justify-center md:justify-normal py-4'>
+          className='w-full flex flex-wrap gap-4 my-4 justify-center md:justify-normal py-4'>
           <h2 className='text-xl font-bold w-full capitalize'>
             {category.replaceAll("-", " ")}
           </h2>
           {list.map((pattern) => (
             <Link href={pattern.link} key={pattern.id}>
-              <Card className='mt-4 w-56 h-full hover:border-destructive hover:cursor-pointer'>
+              <Card className='w-56 h-full hover:border-destructive hover:cursor-pointer'>
                 <CardHeader>
                   <CardTitle className='text-center text-xl'>
                     {pattern.name}

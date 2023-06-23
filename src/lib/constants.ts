@@ -165,3 +165,5 @@ export const patterns = [
     ],
   },
 ];
+
+export const repo = "https://github.com/EstivenCano/design-patterns";
