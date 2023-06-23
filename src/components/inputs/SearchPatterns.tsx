@@ -36,8 +36,8 @@ export const SearchPatterns = () => {
       <DialogTrigger asChild>
         <Button className='inline-flex items-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground px-4 py-2 relative min-w-[200px] w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64'>
           <p className='whitespace-nowrap'>Search a pattern...</p>
-          <Badge variant='secondary' className='absolute right-2 top-2 gap-1'>
-            <CommandIcon size={15} />
+          <Badge variant='secondary' className='absolute right-2 top-2 gap-0.5'>
+            <CommandIcon size={12} />
             <p>k</p>
           </Badge>
         </Button>
