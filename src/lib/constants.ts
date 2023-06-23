@@ -1,11 +1,11 @@
 export const patterns = [
   {
-    category: "Creational patterns",
+    category: "creational-patterns",
     list: [
       {
         id: 1,
         name: "Factory Method",
-        link: "/creational/factory-method",
+        link: "/creational-patterns/factory-method",
         image:
           "https://refactoring.guru/images/patterns/cards/factory-method-mini.png",
       },
@@ -40,12 +40,12 @@ export const patterns = [
     ],
   },
   {
-    category: "Structural patterns",
+    category: "structural-patterns",
     list: [
       {
         id: 1,
         name: "Adapter",
-        link: "/structural/adapter",
+        link: "/structural-patterns/adapter",
         image:
           "https://refactoring.guru/images/patterns/cards/adapter-mini.png",
       },
@@ -53,8 +53,7 @@ export const patterns = [
         id: 2,
         name: "Bridge",
         link: "/structural/bridge",
-        image:
-          "https://refactoring.guru/images/patterns/cards/adapter-mini.png",
+        image: "https://refactoring.guru/images/patterns/cards/bridge-mini.png",
       },
       {
         id: 3,
@@ -65,7 +64,7 @@ export const patterns = [
       },
       {
         id: 4,
-        name: "Prototype",
+        name: "Decorator",
         link: "/structural/decorator",
         image:
           "https://refactoring.guru/images/patterns/cards/decorator-mini.png",
@@ -92,12 +91,12 @@ export const patterns = [
     ],
   },
   {
-    category: "Behavioral patterns",
+    category: "behavioral-patterns",
     list: [
       {
         id: 1,
         name: "Chain of Responsibility",
-        link: "/behavioral/chain-of-responsability",
+        link: "/behavioral-patterns/chain-of-responsability",
         image:
           "https://refactoring.guru/images/patterns/cards/chain-of-responsibility-mini.png",
       },
