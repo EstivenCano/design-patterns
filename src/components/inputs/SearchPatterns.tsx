@@ -63,7 +63,7 @@ export const SearchPatterns = () => {
                     <CommandItem
                       key={pattern.id}
                       onSelect={handleNavigate(pattern.link)}>
-                      {pattern.name}
+                      {pattern.name.replaceAll("-", " ")}
                     </CommandItem>
                   ))}
                 </CommandGroup>
