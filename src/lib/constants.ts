@@ -4,36 +4,36 @@ export const patterns = [
     list: [
       {
         id: 1,
-        name: "Factory Method",
+        name: "factory-method",
         link: "/creational-patterns/factory-method",
         image:
           "https://refactoring.guru/images/patterns/cards/factory-method-mini.png",
       },
       {
         id: 2,
-        name: "Abstract Factory",
-        link: "/creational/abstract-factory",
+        name: "abstract-factory",
+        link: "/creational-patterns/abstract-factory",
         image:
           "https://refactoring.guru/images/patterns/cards/abstract-factory-mini.png",
       },
       {
         id: 3,
-        name: "Builder",
-        link: "/creational/builder",
+        name: "builder",
+        link: "/creational-patterns/builder",
         image:
           "https://refactoring.guru/images/patterns/cards/builder-mini.png",
       },
       {
         id: 4,
-        name: "Prototype",
-        link: "/creational/prototype",
+        name: "prototype",
+        link: "/creational-patterns/prototype",
         image:
           "https://refactoring.guru/images/patterns/cards/prototype-mini.png",
       },
       {
         id: 5,
-        name: "Singleton",
-        link: "/creational/singleton",
+        name: "singleton",
+        link: "/creational-patterns/singleton",
         image:
           "https://refactoring.guru/images/patterns/cards/singleton-mini.png",
       },
@@ -52,40 +52,40 @@ export const patterns = [
       {
         id: 2,
         name: "Bridge",
-        link: "/structural/bridge",
+        link: "/structural-patterns/bridge",
         image: "https://refactoring.guru/images/patterns/cards/bridge-mini.png",
       },
       {
         id: 3,
         name: "Composite",
-        link: "/structural/composite",
+        link: "/structural-patterns/composite",
         image:
           "https://refactoring.guru/images/patterns/cards/composite-mini.png",
       },
       {
         id: 4,
         name: "Decorator",
-        link: "/structural/decorator",
+        link: "/structural-patterns/decorator",
         image:
           "https://refactoring.guru/images/patterns/cards/decorator-mini.png",
       },
       {
         id: 5,
         name: "Facade",
-        link: "/structural/facade",
+        link: "/structural-patterns/facade",
         image: "https://refactoring.guru/images/patterns/cards/facade-mini.png",
       },
       {
         id: 6,
         name: "Flyweight",
-        link: "/structural/flyweight",
+        link: "/structural-patterns/flyweight",
         image:
           "https://refactoring.guru/images/patterns/cards/flyweight-mini.png",
       },
       {
         id: 7,
         name: "Proxy",
-        link: "/structural/proxy",
+        link: "/structural-patterns/proxy",
         image: "https://refactoring.guru/images/patterns/cards/proxy-mini.png",
       },
     ],
@@ -103,62 +103,62 @@ export const patterns = [
       {
         id: 2,
         name: "Command",
-        link: "/behavioral/command",
+        link: "/behavioral-patterns/command",
         image:
           "https://refactoring.guru/images/patterns/cards/command-mini.png",
       },
       {
         id: 3,
         name: "Iterator",
-        link: "/behavioral/iterator",
+        link: "/behavioral-patterns/iterator",
         image:
           "https://refactoring.guru/images/patterns/cards/iterator-mini.png",
       },
       {
         id: 4,
         name: "Mediator",
-        link: "/behavioral/mediator",
+        link: "/behavioral-patterns/mediator",
         image:
           "https://refactoring.guru/images/patterns/cards/mediator-mini.png",
       },
       {
         id: 5,
         name: "Memento",
-        link: "/behavioral/memento",
+        link: "/behavioral-patterns/memento",
         image:
           "https://refactoring.guru/images/patterns/cards/memento-mini.png",
       },
       {
         id: 6,
         name: "Observer",
-        link: "/behavioral/observer",
+        link: "/behavioral-patterns/observer",
         image:
           "https://refactoring.guru/images/patterns/cards/observer-mini.png",
       },
       {
         id: 7,
         name: "State",
-        link: "/behavioral/state",
+        link: "/behavioral-patterns/state",
         image: "https://refactoring.guru/images/patterns/cards/state-mini.png",
       },
       {
         id: 8,
         name: "Strategy",
-        link: "/behavioral/strategy",
+        link: "/behavioral-patterns/strategy",
         image:
           "https://refactoring.guru/images/patterns/cards/strategy-mini.png",
       },
       {
         id: 9,
         name: "Template Method",
-        link: "/behavioral/template-method",
+        link: "/behavioral-patterns/template-method",
         image:
           "https://refactoring.guru/images/patterns/cards/template-method-mini.png",
       },
       {
         id: 10,
         name: "Visitor",
-        link: "/behavioral/visitor",
+        link: "/behavioral-patterns/visitor",
         image:
           "https://refactoring.guru/images/patterns/cards/visitor-mini.png",
       },

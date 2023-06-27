@@ -7,6 +7,7 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./public/**/*.{ts,tsx}",
+    "./mdx-components.tsx",
   ],
   theme: {
     container: {

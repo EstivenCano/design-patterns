@@ -1,0 +1,128 @@
+# Structural Patterns
+
+In software engineering, structural design patterns are a set of design patterns that deal with the composition of classes and objects, focusing on how classes and objects are structured and organized to form larger structures. These patterns provide solutions for creating relationships between objects, making them easier to work with and maintain. In this Markdown file, we will explore some commonly used structural design patterns.
+
+---
+
+## 1. Adapter Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/adapter-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Adapter pattern allows incompatible interfaces of different classes to work
+  together by converting the interface of one class into another interface that clients
+  expect. It acts as a bridge between two incompatible interfaces, enabling them
+  to collaborate without modifying their existing code.
+</div>
+<div align='right'>[Go to example](/structural-patterns/adapter)</div>
+
+---
+
+## 2. Bridge Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/bridge-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Bridge pattern decouples an abstraction from its implementation, allowing them
+  to vary independently. It separates the interface from the implementation, enabling
+  both to evolve independently. This pattern is useful when you want to handle different
+  variations or implementations of an abstraction.
+</div>
+<div align='right'>[Go to example](/structural-patterns/bridge)</div>
+
+---
+
+## 3. Composite Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/composite-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Composite pattern composes objects into tree-like structures to represent part-whole
+  hierarchies. It allows clients to treat individual objects and compositions of
+  objects uniformly. This pattern is useful when you want to work with complex hierarchical
+  structures as if they were individual objects.
+</div>
+<div align='right'>[Go to example](/structural-patterns/composite)</div>
+
+---
+
+## 4. Decorator Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/decorator-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Decorator pattern dynamically adds new behaviors or responsibilities to an
+  object without modifying its structure. It provides a flexible alternative to subclassing,
+  allowing objects to be extended with additional functionalities at runtime.
+</div>
+<div align='right'>[Go to example](/structural-patterns/decorator)</div>
+
+---
+
+## 5. Facade Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/facade-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Facade pattern provides a unified interface to a set of interfaces in a subsystem.
+  It simplifies complex systems by providing a higher-level interface that makes
+  the subsystem easier to use. This pattern is useful when you want to provide a
+  simplified interface to a complex subsystem.
+</div>
+<div align='right'>[Go to example](/structural-patterns/facade)</div>
+
+---
+
+## 6. Flyweight Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/flyweight-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Flyweight pattern minimizes memory usage by sharing data across multiple objects.
+  It allows for the efficient support of large numbers of similar objects, by sharing
+  common data and reducing redundancy. This pattern is useful when you need to create
+  a large number of similar objects that can share data.
+</div>
+<div align='right'>[Go to example](/structural-patterns/flyweight)</div>
+
+---
+
+## 7. Proxy Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/proxy-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Proxy pattern provides a surrogate or placeholder object to control access
+  to another object. It acts as a wrapper or intermediary between the client and
+  the actual object, providing additional functionality such as lazy initialization,
+  access control, or caching.
+</div>
+<div align='right'>[Go to example](/structural-patterns/proxy)</div>

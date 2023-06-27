@@ -1,0 +1,186 @@
+# Behavioral Patterns
+
+In software engineering, behavioral design patterns are a set of design patterns that focus on the interaction and communication between objects. These patterns address the responsibilities and behaviors of objects, providing solutions for managing algorithms, collaborations, and communication patterns. In this Markdown file, we will explore some commonly used behavioral design patterns.
+
+---
+
+## 1. Chain of Responsibility Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/chain-of-responsibility-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Chain of Responsibility pattern decouples the sender of a request from its
+  receivers, allowing multiple objects to have a chance to handle the request. Each
+  receiver contains a reference to the next receiver in the chain, forming a chain
+  of objects. This pattern provides flexibility in handling requests and promotes
+  loose coupling.
+</div>
+<div align='right'>
+  [Go to example](/behavioral-patterns/chain-of-responsability)
+</div>
+
+---
+
+## 2. Command Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/command-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Command pattern encapsulates a request as an object, allowing clients to parameterize
+  and decouple the requester from the executor of the request. It enables the execution
+  of commands at different times and provides support for undo/redo operations.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/command)</div>
+
+---
+
+## 3. Iterator Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/iterator-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Iterator pattern provides a way to access elements of an aggregate object sequentially
+  without exposing its underlying representation. It decouples the client from the
+  internal structure of the collection, providing a consistent interface for traversing
+  different types of collections.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/iterator)</div>
+
+---
+
+## 4. Mediator Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/mediator-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Mediator pattern defines an object that encapsulates the communication and
+  coordination between a group of objects. It promotes loose coupling between the
+  objects by reducing direct dependencies and centralizing their interactions through
+  the mediator. This pattern simplifies the communication between objects and enhances
+  maintainability.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/mediator)</div>
+
+---
+
+## 5. Memento Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/memento-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Memento pattern allows capturing and restoring the internal state of an object
+  without violating encapsulation. It provides a way to store and retrieve object
+  states, enabling undo/redo functionality and maintaining the object's history.
+  This pattern is useful when you need to save and restore the state of an object.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/memento)</div>
+
+---
+
+## 6. Observer Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/observer-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Observer pattern establishes a one-to-many relationship between objects, where
+  multiple observers are notified and updated automatically when the state of a subject
+  object changes. This pattern enables loose coupling between the subject and its
+  observers, promoting a flexible and maintainable design.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/observer)</div>
+
+---
+
+## 7. State Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/state-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The State pattern allows an object to alter its behavior when its internal state
+  changes. It encapsulates different states as separate classes, enabling the object
+  to switch between states dynamically. This pattern promotes clean and maintainable
+  code when dealing with complex state transitions.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/state)</div>
+
+---
+
+## 8. Strategy Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/strategy-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Strategy pattern defines a family of interchangeable algorithms, encapsulating
+  each algorithm into a separate class. It allows clients to dynamically select an
+  algorithm at runtime, providing flexibility and promoting code reuse.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/strategy)</div>
+
+---
+
+## 9. Template Method Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/template-method-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Template Method pattern defines the skeleton of an algorithm in a base class
+  but allows subclasses to override certain steps of the algorithm. It promotes code
+  reuse by encapsulating the common parts of the algorithm in the base class while
+  allowing subclasses to provide specific implementations.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/template)</div>
+
+---
+
+## 10. Visitor Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/visitor-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Visitor pattern separates the algorithms from the objects on which they operate.
+  It allows adding new operations to existing objects without modifying their classes.
+  The pattern achieves this by defining separate visitor objects that encapsulate
+  the operations and visit each element in a collection of objects. This pattern
+  promotes extensibility and simplifies the addition of new operations.
+</div>
+<div align='right'>[Go to example](behavioral-patterns/visitor)</div>

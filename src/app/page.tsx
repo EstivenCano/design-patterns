@@ -14,20 +14,20 @@ export default function Home() {
         <section
           key={category}
           className='w-full flex flex-wrap gap-4 my-4 justify-center py-4'>
-          <Button asChild variant='ghost' className='w-full'>
+          <Button asChild variant='ghost' className='w-full group'>
             <Link href={`/${category}`} className='flex gap-4'>
               <h2 className='text-xl font-bold capitalize'>
                 {category.replaceAll("-", " ")}
               </h2>
-              <ArrowRightCircle />
+              <ArrowRightCircle className='group-hover:translate-x-4 duration-200 group-hover:text-destructive' />
             </Link>
           </Button>
           {list.map((pattern) => (
             <Link href={pattern.link} key={pattern.id}>
               <Card className='w-56 h-full hover:border-destructive hover:cursor-pointer'>
                 <CardHeader>
-                  <CardTitle className='text-center text-xl'>
-                    {pattern.name}
+                  <CardTitle className='text-center text-xl capitalize'>
+                    {pattern.name.replaceAll("-", " ")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

@@ -1,0 +1,90 @@
+# Creational Patterns
+
+In software engineering, creational design patterns are a set of design patterns that deal with object creation mechanisms, trying to create objects in a manner that is suitable for a particular situation. These patterns provide flexibility in creating objects and encapsulate the knowledge about the classes and objects required by the system. In this markdown file, we will explore some commonly used creational design patterns.
+
+---
+
+## 1. Factory Method Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/factory-method-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Factory Method pattern defines an interface for creating objects, but lets
+  subclasses decide which class to instantiate. It provides a way to delegate the
+  object creation logic to subclasses, making the code more extensible and maintainable.
+</div>
+<div align='right'>[Go to example](/creational-patterns/factory-method)</div>
+
+---
+
+## 2. Abstract Factory Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/abstract-factory-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Abstract Factory pattern provides an interface for creating families of related
+  or dependent objects without specifying their concrete classes. It allows the client
+  code to work with objects without having to know their specific types, promoting
+  loose coupling between the client and the created objects.
+</div>
+<div align='right'>[Go to example](/creational-patterns/abstract-factory)</div>
+
+---
+
+## 3. Builder Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/builder-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Builder pattern separates the construction of complex objects from their representation,
+  allowing the same construction process to create different representations. It
+  provides a step-by-step approach to object construction and allows the flexibility
+  to vary the internal representation of objects.
+</div>
+<div align='right'>[Go to example](/creational-patterns/builder)</div>
+
+---
+
+## 4. Prototype Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/prototype-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Prototype pattern creates new objects by cloning existing ones, thus avoiding
+  the need for subclassing. It provides a way to create objects based on existing
+  instances, making the process more efficient and flexible.
+</div>
+<div align='right'>[Go to example](/creational-patterns/prototype)</div>
+
+---
+
+## 5. Singleton Pattern
+
+<div className='block md:flex gap-4'>
+  <img
+    src='https://refactoring.guru/images/patterns/cards/singleton-mini.png'
+    width='200'
+    height='200'
+    className='m-auto'
+  />
+  The Singleton pattern ensures that a class has only one instance, providing a global
+  point of access to it. This pattern is useful when you want to limit the number
+  of instances of a class, such as in a database connection or logging system.
+</div>
+<div align='right'>[Go to example](/creational-patterns/singleton)</div>
