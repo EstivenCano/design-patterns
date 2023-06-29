@@ -85,7 +85,7 @@ const components = {
   a: ({ className, ...props }: React.ImgHTMLAttributes<HTMLAnchorElement>) => (
     <a
       className={cn(
-        "font-medium underline underline-offset-4 text-destructive dark:text-red-400",
+        "font-medium underline underline-offset-4 text-red-600 dark:text-red-400",
         className
       )}
       {...props}
@@ -182,7 +182,7 @@ const components = {
   pre: ({ className, ...props }: React.ImgHTMLAttributes<HTMLPreElement>) => (
     <Pre
       className={cn(
-        "mb-4 mt-6 overflow-x-hidden rounded-lg border bg-black pr-1 pt-4 pb-1",
+        "mb-4 mt-6 overflow-x-hidden rounded-lg border pr-1 pt-4 pb-1",
         className
       )}
       {...props}

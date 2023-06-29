@@ -10,7 +10,7 @@ import { repo } from "@/lib/constants";
 export function GithubButton() {
   return (
     <Button variant='ghost' size='icon' asChild>
-      <Link href={repo} target='_blank'>
+      <Link href={repo} aria-label='Github' target='_blank'>
         <Github className='h-[1.2rem] w-[1.2rem]' />
       </Link>
     </Button>

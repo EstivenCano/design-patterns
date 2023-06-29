@@ -1,10 +1,12 @@
 import { FC } from "react";
-import Link from "next/link";
 import { CircleDashed } from "lucide-react";
+import dynamic from "next/dynamic";
 
 interface Props {
   tags?: Array<string>;
 }
+
+const RightLink = dynamic(() => import("./RightLink"));
 
 export const RightSideNav: FC<Props> = ({ tags }) => {
   return (
@@ -18,11 +20,7 @@ export const RightSideNav: FC<Props> = ({ tags }) => {
             return (
               <span className={`flex items-center pl-${level}`} key={i}>
                 <CircleDashed size={9} />
-                <Link
-                  href={`#${id}`}
-                  className={`ml-1 text-sm text-foreground/70 hover:text-foreground truncate`}>
-                  {id.replaceAll("-", " ")}
-                </Link>
+                <RightLink id={id} />
               </span>
             );
           })}
