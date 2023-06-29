@@ -1,18 +1,27 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { patterns } from "@/lib/constants";
-import Image from "next/image";
-import Link from "next/link";
+import { Mdx } from "@/components/surfaces/Mdx";
+import { allDocs } from "contentlayer/generated";
+import { redirect } from "next/navigation";
 
-export default function Pattern({
+async function getDocFromParams(slug: string) {
+  const doc = allDocs.find((doc) => doc.slugAsParams === `/${slug}`);
+
+  if (!doc) {
+    redirect("/");
+  }
+
+  return doc;
+}
+
+export default async function Pattern({
   params: { pattern },
 }: {
   params: { pattern: string };
 }) {
-  const title = pattern.replaceAll("-", " ");
+  const doc = await getDocFromParams(pattern);
 
   return (
-    <main className='flex min-h-screen max-w-7xl flex-col items-center py-16 px-10'>
-      <h1 className='text-primary text-2xl font-bold capitalize'>{title}</h1>
+    <main className='flex min-h-screen max-w-5xl flex-col items-center py-8 px-10'>
+      <Mdx code={doc.body.code} />
     </main>
   );
 }

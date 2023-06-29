@@ -1,0 +1,221 @@
+---
+title: Factory method pattens
+description: Definition and example about the factory method pattern applied to the frontend
+---
+
+# Factory Method Pattern
+
+The **Factory Method pattern** is a creational design pattern that provides an interface for creating objects but allows subclasses or functions to decide which class or component to instantiate. It encapsulates the object or component creation logic within a method or function, which can be overridden or implemented differently to produce different types of objects or components.
+
+In a React and TypeScript context, you can use the Factory Method pattern with functional components to create components dynamically based on certain conditions or parameters. Here's a simplified example:
+
+```tsx showLineNumbers
+import React, { ReactNode } from "react";
+
+// Define the abstract component type
+type ComponentType = "button" | "input";
+
+// Define the abstract component function type
+type ComponentFunction = () => ReactNode;
+
+// Define the factory function
+function createComponent(type: ComponentType): ComponentFunction {
+  if (type === "button") {
+    return () => <button> Click me </button>;
+  } else if (type === "input") {
+    return () => <input type='text' />;
+  }
+
+  throw new Error("Invalid component type");
+}
+
+// Usage in React component
+const MyForm: React.FC = () => {
+  const buttonComponent = createComponent("button");
+  const inputComponent = createComponent("input");
+
+  return (
+    <div>
+      {buttonComponent()}
+      {inputComponent()}
+    </div>
+  );
+};
+```
+
+In this example, we define the **ComponentType** type, which represents the possible types of components ('button' and 'input'). We also define the **ComponentFunction** type, which represents the function that returns a ReactNode (the component itself).
+
+The **createComponent** function acts as the factory function. It takes the component type as a parameter and returns the corresponding component function. We use a switch statement to determine the appropriate component function based on the type.
+
+In the **MyForm** component, we create instances of the desired components by calling the **createComponent** function with the desired type. We then invoke the component functions to render the components in JSX.
+
+## Use cases
+
+The Factory Method pattern can be useful in frontend development in the following scenarios:
+
+1. **Dynamic component creation**: When you have a need to create components dynamically based on certain conditions or parameters, the Factory Method pattern can be employed. It allows you to encapsulate the logic for component creation and choose the appropriate component type at runtime. This is particularly useful in cases where the component type depends on user interactions, data conditions, or configuration settings.
+
+```tsx showLineNumbers
+import React from "react";
+
+const DynamicComponent = ({ componentType }) => {
+  if (componentType === "button") {
+    return <button>Click me</button>;
+  } else if (componentType === "input") {
+    return <input type='text' />;
+  }
+
+  return null;
+};
+
+const App = () => {
+  return (
+    <div>
+      <DynamicComponent componentType='button' />
+      <DynamicComponent componentType='input' />
+    </div>
+  );
+};
+
+export default App;
+```
+
+2. **Conditional rendering**: When you have different rendering logic or variations of a component based on certain conditions, the Factory Method pattern can help. By encapsulating the creation of different component instances in a factory method, you can easily switch between different implementations or variations of a component based on the current state or conditions in your application.
+
+```tsx showLineNumbers
+import React from "react";
+
+const ConditionalComponent = ({ condition }) => {
+  return condition ? (
+    <div>Condition is true</div>
+  ) : (
+    <div>Condition is false</div>
+  );
+};
+
+const App = () => {
+  const isConditionTrue = true;
+
+  return (
+    <div>
+      <ConditionalComponent condition={isConditionTrue} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+3. **Theme or style customization**: When you want to provide theme or style customization options to users, the Factory Method pattern can be applied. It allows you to create components with different visual styles or themes based on user preferences or selected themes. The factory method can encapsulate the logic for applying the chosen styles to the components.
+
+```tsx showLineNumbers
+import React from "react";
+
+const ThemedComponent = ({ theme }) => {
+  return (
+    <div style={{ color: theme === "dark" ? "white" : "black" }}>
+      Themed component
+    </div>
+  );
+};
+
+const App = () => {
+  const theme = "dark";
+
+  return (
+    <div>
+      <ThemedComponent theme={theme} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+4. **Abstraction of API interactions**: When working with APIs, the Factory Method pattern can be used to abstract the creation of API service objects. The factory method can handle the creation of different API service instances based on the selected API endpoints, authentication methods, or data formats. This abstraction provides a clean interface for interacting with various APIs in your frontend application.
+
+```tsx showLineNumbers
+import React, { useEffect, useState } from "react";
+
+const APIComponent = ({ apiEndpoint }) => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Call API and set the data
+    fetchData(apiEndpoint)
+      .then((response) => setData(response))
+      .catch((error) => console.error(error));
+  }, [apiEndpoint]);
+
+  return <div>{data}</div>;
+};
+
+const App = () => {
+  const apiEndpoint = "https://api.example.com/data";
+
+  return (
+    <div>
+      <APIComponent apiEndpoint={apiEndpoint} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+5. **Plug-in system or extensibility**: If you are developing a frontend application that supports plug-ins or extensions, the Factory Method pattern can be beneficial. It allows you to create instances of different plug-in components or modules dynamically based on user preferences or configuration. The factory method can handle the creation and initialization of these plug-ins, providing a flexible and extensible architecture.
+
+```tsx showLineNumbers
+import React from "react";
+
+// Plugin component
+const PluginComponent = ({ text }) => {
+  return <div>{text}</div>;
+};
+
+// Plugin factory function
+const createPlugin = (pluginType) => {
+  if (pluginType === "greeting") {
+    return () => <PluginComponent text='Hello, world!' />;
+  } else if (pluginType === "farewell") {
+    return () => <PluginComponent text='Goodbye, world!' />;
+  }
+
+  return null;
+};
+
+const App = () => {
+  const pluginType = "greeting";
+  const plugin = createPlugin(pluginType);
+
+  return <div>{plugin && plugin()}</div>;
+};
+
+export default App;
+```
+
+Remember that the Factory Method pattern promotes loose coupling, flexibility, and code reuse in frontend development. It provides a way to abstract the creation of objects or components, allowing you to easily switch between different implementations or variations based on dynamic conditions.
+
+## Advantages
+
+- **Flexibility**: The Factory Method pattern provides flexibility by allowing the creation of objects or components to be determined at runtime. This enables dynamic selection or creation of different object types based on specific conditions or configurations.
+
+- **Code Reusability**: The Factory Method pattern promotes code reusability by encapsulating the object or component creation logic in a single method or function. This allows for easy reuse of the factory method across different parts of the application.
+
+- **Abstraction**: The Factory Method pattern abstracts the object or component creation process, providing a clean separation between the client code and the creation logic. This abstraction reduces coupling and improves maintainability by allowing changes to the creation logic without affecting the client code.
+
+- **Testability**: The Factory Method pattern facilitates testing by enabling the creation of mock or stub objects during unit testing. By replacing the concrete factory method with a test-specific implementation, you can control the creation of objects and simulate different scenarios for testing purposes.
+
+- **Extensibility**: The Factory Method pattern supports extensibility by allowing the addition of new object types or variations without modifying the existing client code. New subclasses or factory functions can be added to create new objects, promoting an open-closed principle.
+
+## Disadvantages
+
+- **Complexity**: Implementing the Factory Method pattern can introduce additional complexity, especially when dealing with a large number of object types or variations. The creation logic may become more intricate, requiring careful management and maintenance.
+
+- **Increased Abstraction**: While abstraction can be advantageous, excessive abstraction through the Factory Method pattern may obscure the underlying object creation process. It may make it harder to understand and reason about the flow of object creation in the codebase.
+
+- **Potential Overhead**: Depending on the implementation, the Factory Method pattern can introduce some overhead in terms of performance or memory usage. This is particularly true when dealing with complex object hierarchies or heavy object instantiation.
+
+- **Dependency on the Factory Method**: Introducing the Factory Method pattern creates a dependency on the factory method itself. Client code must rely on the factory method for object creation, making it less flexible if the creation logic needs to be changed or replaced.
+
+- **Trade-off with Simplicity**: In some cases, the Factory Method pattern may introduce unnecessary complexity if the application does not require dynamic object creation or different variations of objects. It's important to consider the trade-off between flexibility and simplicity when deciding to use this pattern.
