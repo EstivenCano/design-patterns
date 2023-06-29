@@ -29,6 +29,10 @@ export const Doc = defineDocumentType(() => ({
     description: {
       type: "string",
     },
+    tags: {
+      type: "list",
+      of: { type: "string" },
+    },
   },
   computedFields,
 }));
@@ -42,7 +46,7 @@ export default makeSource({
       rehypeSlug,
       [
         rehypePrettyCode,
-        {
+        -{
           theme: {
             dark: "github-dark-dimmed",
             light: "github-light",

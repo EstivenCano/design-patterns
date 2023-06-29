@@ -1,6 +1,16 @@
 ---
 title: Factory method pattens
 description: Definition and example about the factory method pattern applied to the frontend
+tags:
+  - factory-method-pattern_1
+  - use-cases_2
+  - 1-dynamic-component-creation_6
+  - 2-conditional-rendering_6
+  - 3-theme-or-style-customization_6
+  - 4-abstraction-of-api-interactions_6
+  - 5-plug-in-system-or-extensibility_6
+  - advantages_2
+  - disadvantages_2
 ---
 
 # Factory Method Pattern
@@ -53,7 +63,9 @@ In the **MyForm** component, we create instances of the desired components by ca
 
 The Factory Method pattern can be useful in frontend development in the following scenarios:
 
-1. **Dynamic component creation**: When you have a need to create components dynamically based on certain conditions or parameters, the Factory Method pattern can be employed. It allows you to encapsulate the logic for component creation and choose the appropriate component type at runtime. This is particularly useful in cases where the component type depends on user interactions, data conditions, or configuration settings.
+#### 1. Dynamic component creation:
+
+When you have a need to create components dynamically based on certain conditions or parameters, the Factory Method pattern can be employed. It allows you to encapsulate the logic for component creation and choose the appropriate component type at runtime. This is particularly useful in cases where the component type depends on user interactions, data conditions, or configuration settings.
 
 ```tsx showLineNumbers
 import React from "react";
@@ -80,7 +92,9 @@ const App = () => {
 export default App;
 ```
 
-2. **Conditional rendering**: When you have different rendering logic or variations of a component based on certain conditions, the Factory Method pattern can help. By encapsulating the creation of different component instances in a factory method, you can easily switch between different implementations or variations of a component based on the current state or conditions in your application.
+#### 2. Conditional rendering:
+
+When you have different rendering logic or variations of a component based on certain conditions, the Factory Method pattern can help. By encapsulating the creation of different component instances in a factory method, you can easily switch between different implementations or variations of a component based on the current state or conditions in your application.
 
 ```tsx showLineNumbers
 import React from "react";
@@ -106,7 +120,9 @@ const App = () => {
 export default App;
 ```
 
-3. **Theme or style customization**: When you want to provide theme or style customization options to users, the Factory Method pattern can be applied. It allows you to create components with different visual styles or themes based on user preferences or selected themes. The factory method can encapsulate the logic for applying the chosen styles to the components.
+#### 3. Theme or style customization:
+
+When you want to provide theme or style customization options to users, the Factory Method pattern can be applied. It allows you to create components with different visual styles or themes based on user preferences or selected themes. The factory method can encapsulate the logic for applying the chosen styles to the components.
 
 ```tsx showLineNumbers
 import React from "react";
@@ -132,7 +148,9 @@ const App = () => {
 export default App;
 ```
 
-4. **Abstraction of API interactions**: When working with APIs, the Factory Method pattern can be used to abstract the creation of API service objects. The factory method can handle the creation of different API service instances based on the selected API endpoints, authentication methods, or data formats. This abstraction provides a clean interface for interacting with various APIs in your frontend application.
+#### 4. Abstraction of API interactions:
+
+When working with APIs, the Factory Method pattern can be used to abstract the creation of API service objects. The factory method can handle the creation of different API service instances based on the selected API endpoints, authentication methods, or data formats. This abstraction provides a clean interface for interacting with various APIs in your frontend application.
 
 ```tsx showLineNumbers
 import React, { useEffect, useState } from "react";
@@ -163,7 +181,9 @@ const App = () => {
 export default App;
 ```
 
-5. **Plug-in system or extensibility**: If you are developing a frontend application that supports plug-ins or extensions, the Factory Method pattern can be beneficial. It allows you to create instances of different plug-in components or modules dynamically based on user preferences or configuration. The factory method can handle the creation and initialization of these plug-ins, providing a flexible and extensible architecture.
+#### 5. Plug-in system or extensibility:
+
+If you are developing a frontend application that supports plug-ins or extensions, the Factory Method pattern can be beneficial. It allows you to create instances of different plug-in components or modules dynamically based on user preferences or configuration. The factory method can handle the creation and initialization of these plug-ins, providing a flexible and extensible architecture.
 
 ```tsx showLineNumbers
 import React from "react";

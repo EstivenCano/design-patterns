@@ -1,3 +1,4 @@
+import { RightSideNav } from "@/components/navigation/RightSideNav";
 import { Mdx } from "@/components/surfaces/Mdx";
 import { allDocs } from "contentlayer/generated";
 import { redirect } from "next/navigation";
@@ -20,8 +21,9 @@ export default async function Pattern({
   const doc = await getDocFromParams(pattern);
 
   return (
-    <main className='flex min-h-screen max-w-5xl flex-col items-center py-8 px-10'>
+    <main className='flex relative min-h-screen max-w-5xl items-center py-8 px-10'>
       <Mdx code={doc.body.code} />
+      <RightSideNav tags={doc.tags} />
     </main>
   );
 }
