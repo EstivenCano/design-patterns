@@ -1,0 +1,116 @@
+---
+title: Prototype pattern
+description: Definition and example about the prototype pattern applied to the frontend
+tags:
+  - prototype-pattern_1
+  - use-cases_2
+  - 1-dynamic-component-creation_6
+  - 2-efficient-state-initialization_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Prototype Pattern
+
+The Prototype pattern is a creational design pattern that allows the creation of objects by cloning or copying existing objects, known as prototypes. Rather than creating new objects from scratch, the Prototype pattern provides a way to produce new instances by cloning existing ones. This pattern promotes flexibility and efficiency in object creation.
+
+In the following example, we have a prototype button element defined, and the cloneElement function from React is utilized to create a clone of the prototype with a modified event handler. This approach promotes code reusability and runtime customization, as it enables the creation of components based on existing prototypes.
+
+```tsx showLineNumbers
+import React, { cloneElement, ReactElement } from "react";
+
+// Prototype object
+const prototypeButton: ReactElement = <button>Hello</button>;
+
+// Cloning the prototype
+const cloneButton = cloneElement(prototypeButton, {
+  onClick: () => console.log("Clicked"),
+});
+
+const App = () => (
+  <div>
+    <h1>Prototype Pattern Example</h1>
+    {cloneButton}
+  </div>
+);
+
+export default App;
+```
+
+### Use cases
+
+#### 1. Dynamic Component Creation
+
+The Prototype pattern is useful when you need to dynamically create components based on varying configurations or data. Rather than creating components from scratch, you can clone existing prototypes and modify them as needed.
+
+```tsx showLineNumbers
+import React, { cloneElement } from "react";
+
+// Prototype component
+const prototypeComponent = <div>Hello, World!</div>;
+
+// Cloning the prototype with modified props
+const clonedComponent = cloneElement(prototypeComponent, {
+  style: { color: "red" },
+});
+
+const App = () => (
+  <div>
+    <h1>Prototype Pattern Example</h1>
+    {clonedComponent}
+  </div>
+);
+
+export default App;
+```
+
+#### 2. Efficient State Initialization
+
+The Prototype pattern can be used to efficiently initialize component state. Instead of manually setting state properties, you can clone an existing state object and modify it as needed, saving unnecessary overhead in state initialization.
+
+```tsx showLineNumbers
+import React, { useState, cloneElement } from "react";
+
+// Prototype state
+const initialState = { count: 0 };
+
+// Cloning the prototype state
+const [state, setState] = useState(cloneElement(initialState));
+
+const incrementCount = () => {
+  setState((prevState) => ({
+    ...prevState,
+    count: prevState.count + 1,
+  }));
+};
+
+const App = () => (
+  <div>
+    <h1>Prototype Pattern Example</h1>
+    <p>Count: {state.count}</p>
+    <button onClick={incrementCount}>Increment</button>
+  </div>
+);
+
+export default App;
+```
+
+### Advantages
+
+- **Flexibility in Object Creation**: The Prototype pattern allows for the creation of new objects by cloning existing ones, providing flexibility in object creation. It avoids the need to tightly couple the client code with specific object classes, allowing objects to be created dynamically at runtime.
+
+- **Efficient Object Creation**: Cloning objects using the Prototype pattern can be more efficient than creating new objects from scratch. It avoids costly initialization processes, especially when the initialization involves complex operations or resource-intensive tasks.
+
+- **Easy Customization**: The Prototype pattern enables easy customization of objects by allowing modifications to cloned instances. This makes it convenient to create variations of objects with different configurations or properties without having to redefine the entire object structure.
+
+- **Code Reusability**: By providing a mechanism for object cloning, the Prototype pattern promotes code reusability. Prototypes can serve as templates for creating new objects, reducing the need to duplicate code and promoting a modular and maintainable codebase.
+
+### Disadvantages
+
+- **Cloning Complexity**: Cloning objects using the Prototype pattern may involve deep copying of complex object structures. This can introduce challenges in maintaining proper references and managing shared state between cloned objects, potentially leading to subtle bugs.
+
+- **Prototype Registration**: In some cases, managing and registering prototypes can add complexity to the system. Keeping track of available prototypes and ensuring they are properly registered and accessible can require additional implementation effort.
+
+- **Potential Performance Impact**: While the Prototype pattern can improve performance by avoiding costly object creation, the cloning process itself can have a performance impact, especially for deeply nested or large object structures. It is important to consider the performance implications when using the Prototype pattern in performance-critical scenarios.
+
+- **Design Complexity**: The Prototype pattern introduces an additional layer of abstraction and complexity to the design. It may not be necessary or beneficial for all scenarios, and its usage should be carefully evaluated to ensure it adds value to the system.
