@@ -1,0 +1,212 @@
+---
+title: Abstract factory pattern
+description: Definition and example about the abstract factory pattern applied to the frontend
+tags:
+  - builder-pattern_1
+  - use-cases_2
+  - 1-simplifying-object-construction_6
+  - 2-building-complex-ui-components_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Builder Pattern
+
+The Builder pattern is a creational design pattern that allows the construction of complex objects step by step. It separates the construction logic from the object's representation, allowing different construction processes to create different representations of an object.
+
+In TypeScript and React, you can use the Builder Pattern to create complex objects with a more expressive and fluent syntax. Although the Builder Pattern is commonly associated with class-based components, it can also be used effectively with functional components. Here's an example of how you can implement the Builder Pattern in TypeScript and React with functional components:
+
+```tsx showLineNumbers
+import React from "react";
+
+// Builder class
+class FormBuilder {
+  constructor() {
+    this.form = {
+      fields: [],
+    };
+  }
+
+  addTextField(label, name) {
+    this.form.fields.push({
+      type: "text",
+      label,
+      name,
+    });
+    return this;
+  }
+
+  addCheckboxField(label, name) {
+    this.form.fields.push({
+      type: "checkbox",
+      label,
+      name,
+    });
+    return this;
+  }
+
+  getResult() {
+    return this.form;
+  }
+}
+
+// Usage
+const form = new FormBuilder()
+  .addTextField("Name", "name")
+  .addCheckboxField("Agree to Terms", "terms")
+  .getResult();
+
+const App = () => (
+  <form>
+    {form.fields.map((field) => (
+      <div key={field.name}>
+        <label>{field.label}</label>
+        {field.type === "text" ? (
+          <input type='text' name={field.name} />
+        ) : (
+          <input type='checkbox' name={field.name} />
+        )}
+      </div>
+    ))}
+  </form>
+);
+
+export default App;
+```
+
+### Use cases
+
+#### 1. Simplifying Object Construction
+
+The Builder pattern can be used to simplify the construction of objects with multiple properties. By providing a step-by-step approach to configuring the object, it allows for more readable and expressive code. In this example, we use the Builder pattern to construct a user object with properties like name, email, and age. Each property is set using dedicated methods, providing a fluent interface for constructing the object.
+
+```tsx showLineNumbers
+import React from "react";
+
+// Builder class
+class UserBuilder {
+  constructor() {
+    this.user = {
+      name: "",
+      email: "",
+      age: null,
+    };
+  }
+
+  setName(name) {
+    this.user.name = name;
+    return this;
+  }
+
+  setEmail(email) {
+    this.user.email = email;
+    return this;
+  }
+
+  setAge(age) {
+    this.user.age = age;
+    return this;
+  }
+
+  build() {
+    return this.user;
+  }
+}
+
+// Usage
+const user = new UserBuilder()
+  .setName("John Doe")
+  .setEmail("johndoe@example.com")
+  .setAge(25)
+  .build();
+
+const UserProfile = () => (
+  <div>
+    <h2>User Profile</h2>
+    <p>Name: {user.name}</p>
+    <p>Email: {user.email}</p>
+    <p>Age: {user.age}</p>
+  </div>
+);
+
+export default UserProfile;
+```
+
+#### 2. Building Complex UI Components
+
+The Builder pattern is also useful for building complex UI components with many customizable attributes. In this example, we use the Builder pattern to construct a card component. The builder methods allow us to set attributes such as title, content, background color, and text color. This approach makes it easier to create the card component with different configurations while maintaining a clear and concise construction process.
+
+```tsx showLineNumbers
+import React from "react";
+
+// Builder class
+class CardBuilder {
+  constructor() {
+    this.card = {
+      title: "",
+      content: "",
+      backgroundColor: "",
+      textColor: "",
+    };
+  }
+
+  setTitle(title) {
+    this.card.title = title;
+    return this;
+  }
+
+  setContent(content) {
+    this.card.content = content;
+    return this;
+  }
+
+  setBackgroundColor(backgroundColor) {
+    this.card.backgroundColor = backgroundColor;
+    return this;
+  }
+
+  setTextColor(textColor) {
+    this.card.textColor = textColor;
+    return this;
+  }
+
+  build() {
+    return this.card;
+  }
+}
+
+// Usage
+const card = new CardBuilder()
+  .setTitle("Card Title")
+  .setContent("Card Content")
+  .setBackgroundColor("#eaeaea")
+  .setTextColor("#333333")
+  .build();
+
+const CardComponent = () => (
+  <div style={{ backgroundColor: card.backgroundColor, color: card.textColor }}>
+    <h3>{card.title}</h3>
+    <p>{card.content}</p>
+  </div>
+);
+
+export default CardComponent;
+```
+
+### Advantages
+
+- **Simplifies Object Construction**: The Builder pattern simplifies the construction of complex objects by breaking down the construction process into small, manageable steps. This makes it easier to create and configure objects with many optional parameters.
+
+- **Improves Readability**: The Builder pattern enhances code readability by providing clear and descriptive methods for setting object properties. It makes the code more expressive and self-explanatory.
+
+- **Separates Construction from Representation**: The Builder pattern separates the construction logic from the final representation of the object. This separation allows different builders to create different representations of the same object, providing flexibility and extensibility.
+
+- **Facilitates Step-by-Step Construction**: The Builder pattern allows constructing objects incrementally, step by step. This enables the builder to enforce certain rules or constraints during each step, ensuring the correctness and integrity of the resulting object.
+
+### Disadvantages
+
+- **Increased Complexity**: Implementing the Builder pattern can introduce additional complexity to the codebase, as it requires defining separate builder classes and managing the construction process. This complexity may not be justified for simple object creation scenarios.
+
+- **Potential Overhead**: The Builder pattern may introduce additional overhead due to the need for creating separate builder objects and executing multiple method calls during the construction process. In performance-critical scenarios, this overhead could be a concern.
+
+- **Limited Applicability**: The Builder pattern is most beneficial when dealing with complex objects that require multiple configuration steps. For simpler objects with a limited number of properties, using the Builder pattern may be overkill and add unnecessary complexity.

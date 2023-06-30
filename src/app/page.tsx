@@ -19,12 +19,12 @@ export default function Home() {
               <h2 className='text-xl font-bold capitalize'>
                 {category.replaceAll("-", " ")}
               </h2>
-              <ArrowRightCircle className='group-hover:translate-x-4 duration-200 group-hover:text-destructive' />
+              <ArrowRightCircle className='group-hover:translate-x-4 duration-200 group-hover:text-destructive group-hover:dark:text-red-400' />
             </Link>
           </Button>
           {list.map((pattern) => (
             <Link href={pattern.link} key={pattern.id}>
-              <Card className='w-56 h-full hover:border-destructive hover:cursor-pointer'>
+              <Card className='w-56 h-full hover:border-destructive dark:hover:border-red-400 hover:cursor-pointer'>
                 <CardHeader>
                   <CardTitle className='text-center text-xl capitalize'>
                     {pattern.name.replaceAll("-", " ")}

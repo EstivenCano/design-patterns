@@ -23,7 +23,7 @@ const RightLink = ({ id }: Props) => {
   return (
     <Link
       href={`#${id}`}
-      className={`ml-1 text-sm hover:text-foreground truncate ${
+      className={`ml-1 text-sm hover:text-foreground truncate transition-colors duration-150 ${
         isVisible ? "text-red-600 dark:text-red-400" : "text-foreground/80"
       }`}>
       {id.replaceAll("-", " ")}
