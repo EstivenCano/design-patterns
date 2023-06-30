@@ -1,0 +1,183 @@
+---
+title: Singleton pattern
+description: Definition and example about the singleton pattern applied to the frontend
+tags:
+  - singleton-pattern_1
+  - use-cases_2
+  - 1-global-state-management_6
+  - 2-service-initialization_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Singleton Pattern
+
+The Singleton pattern is a creational design pattern that ensures a class has only one instance and provides a global point of access to it. It guarantees that only a single instance of the class is created throughout the application's lifecycle. The Singleton pattern is commonly used to manage shared resources, configuration settings, or components that need to be globally accessible.
+
+In TypeScript and React, you can implement the Singleton Pattern with functional components using closures and the React Context API. Here's an example of how you can create a singleton instance and use it across multiple components:
+
+```tsx showLineNumbers
+import React, { createContext, useContext } from "react";
+
+// Create a context for the singleton instance
+const MySingletonContext = createContext<MySingleton | undefined>(undefined);
+
+// Singleton class
+class MySingleton {
+  private static instance: MySingleton | null = null;
+
+  private constructor() {
+    // Initialize the singleton instance
+  }
+
+  static getInstance(): MySingleton {
+    if (!MySingleton.instance) {
+      MySingleton.instance = new MySingleton();
+    }
+    return MySingleton.instance;
+  }
+
+  // Add your singleton methods and properties here
+  // For example:
+  public sayHello(): string {
+    return "Hello from Singleton!";
+  }
+}
+
+// Wrapper component that provides the singleton instance
+const MySingletonProvider: React.FC = ({ children }) => {
+  const singletonInstance = MySingleton.getInstance();
+
+  return (
+    <MySingletonContext.Provider value={singletonInstance}>
+      {children}
+    </MySingletonContext.Provider>
+  );
+};
+
+// Custom hook to access the singleton instance
+const useMySingleton = (): MySingleton => {
+  const singletonInstance = useContext(MySingletonContext);
+
+  if (!singletonInstance) {
+    throw new Error(
+      "MySingleton instance not found. Make sure to use MySingletonProvider."
+    );
+  }
+
+  return singletonInstance;
+};
+
+// Example component using the singleton instance
+const MyComponent: React.FC = () => {
+  const singleton = useMySingleton();
+
+  return <div>{singleton.sayHello()}</div>;
+};
+
+// Usage of the singleton instance in the app
+const App: React.FC = () => {
+  return (
+    <MySingletonProvider>
+      <MyComponent />
+    </MySingletonProvider>
+  );
+};
+
+export default App;
+```
+
+### Use cases
+
+The Prototype pattern offers several use cases that can benefit software development. By enabling the creation of objects through cloning or copying existing prototypes, this pattern promotes flexibility, efficiency, and code reusability. It is useful in scenarios as:
+
+#### 1. Global State Management
+
+The Singleton pattern can be useful for managing global state in a React application. It ensures that there is only one instance of the state management class, allowing components to access and modify the shared state efficiently.
+
+```tsx showLineNumbers
+// StateManager.ts
+class StateManager {
+  private static instance: StateManager;
+  private state: any;
+
+  private constructor() {
+    // Initialize state...
+  }
+
+  public static getInstance(): StateManager {
+    if (!StateManager.instance) {
+      StateManager.instance = new StateManager();
+    }
+    return StateManager.instance;
+  }
+
+  // State management methods...
+}
+
+// App.tsx
+import React from "react";
+import StateManager from "./StateManager";
+
+const stateManager = StateManager.getInstance();
+
+const App = () => {
+  // Access the shared state manager
+  const sharedStateManager = stateManager;
+
+  // Component rendering and logic...
+};
+
+export default App;
+```
+
+#### 2. Service Initialization
+
+The Singleton pattern can be used to initialize and manage services that need to be accessed globally. For example, a data service responsible for fetching data from an API can be implemented as a Singleton to ensure there is only one instance of the service.
+
+```tsx showLineNumbers
+// DataService.ts
+class DataService {
+  private static instance: DataService;
+
+  private constructor() {
+    // Initialize service...
+  }
+
+  public static getInstance(): DataService {
+    if (!DataService.instance) {
+      DataService.instance = new DataService();
+    }
+    return DataService.instance;
+  }
+
+  // Service methods...
+}
+
+// App.tsx
+import React from "react";
+import DataService from "./DataService";
+
+const dataService = DataService.getInstance();
+
+const App = () => {
+  // Access the shared data service
+  const sharedDataService = dataService;
+
+  // Component rendering and logic...
+};
+
+export default App;
+```
+
+### Advantages
+
+- **Single Instance**: The Singleton pattern ensures that only one instance of a class is created, preventing multiple instances from being created accidentally. This guarantees the availability of the instance throughout the application and avoids duplication of resources.
+
+- **Global Accessibility**: With the Singleton pattern, the instance is globally accessible, allowing components or services to access it easily without the need for explicit passing of references or dependencies.
+
+### Disadvantages
+
+- **Testing Challenges**: The global accessibility of a Singleton instance can make testing more challenging, as it introduces shared state and dependencies across different tests. Care must be taken to properly isolate and manage the Singleton instance during testing.
+
+- **Tight Coupling**: The Singleton pattern can introduce tight coupling between components and the Singleton instance. This can make it more difficult to substitute the Singleton with a different implementation or swap dependencies.
