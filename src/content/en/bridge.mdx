@@ -1,0 +1,223 @@
+---
+title: Bridge pattern
+description: Definition and example about the Bridge pattern applied to the frontend
+tags:
+  - bridge-pattern_1
+  - use-cases_2
+  - 1-handling-different-rendering-implementations_6
+  - 2-database-abstraction_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Bridge Pattern
+
+The Bridge pattern is a structural design pattern that decouples an abstraction from its implementation, allowing them to vary independently. It provides a way to separate the abstraction and implementation into separate class hierarchies, enabling them to evolve and change independently of each other. The Bridge pattern promotes loose coupling between the abstraction and implementation, making it easier to modify and extend them without affecting each other.
+
+By using the Bridge pattern, we can achieve a flexible architecture where the rendering logic and the shapes are decoupled, allowing us to switch between different renderers without modifying the core shape implementation, you can implement it in React as the following examples:
+
+```tsx showLineNumbers
+// Abstraction
+interface Shape {
+  draw(): string;
+}
+
+// Implementations
+class Circle implements Shape {
+  draw(): string {
+    return "Drawing a circle";
+  }
+}
+
+class Square implements Shape {
+  draw(): string {
+    return "Drawing a square";
+  }
+}
+
+// Bridge
+interface Renderer {
+  renderShape(shape: Shape): string;
+}
+
+class WebRenderer implements Renderer {
+  renderShape(shape: Shape): string {
+    return `[Web] ${shape.draw()}`;
+  }
+}
+
+class MobileRenderer implements Renderer {
+  renderShape(shape: Shape): string {
+    return `[Mobile] ${shape.draw()}`;
+  }
+}
+
+// Component using the Bridge pattern
+const ShapeRenderer: React.FC<{ shape: Shape; renderer: Renderer }> = ({
+  shape,
+  renderer,
+}) => {
+  const renderedShape = renderer.renderShape(shape);
+
+  return <div>{renderedShape}</div>;
+};
+
+// Usage
+const circle = new Circle();
+const square = new Square();
+
+const webRenderer = new WebRenderer();
+const mobileRenderer = new MobileRenderer();
+
+const App: React.FC = () => {
+  return (
+    <div>
+      <ShapeRenderer shape={circle} renderer={webRenderer} />
+      <ShapeRenderer shape={square} renderer={webRenderer} />
+      <ShapeRenderer shape={circle} renderer={mobileRenderer} />
+      <ShapeRenderer shape={square} renderer={mobileRenderer} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+In this example, we have the Shape interface representing the abstraction, which defines the draw() method. The Circle and Square classes implement the Shape interface and provide the concrete implementation of the draw() method.
+
+The Renderer interface represents the bridge between the abstraction and the implementation. The WebRenderer and MobileRenderer classes implement the Renderer interface and provide the specific rendering logic for the web and mobile platforms.
+
+The ShapeRenderer component acts as the bridge between the abstraction and the implementation. It takes a shape and renderer as props and renders the shape using the provided renderer. This way, we can decouple the rendering logic from the specific shape and easily switch between different renderers.
+
+In the App component, we create instances of shapes (circle and square) and renderers (webRenderer and mobileRenderer). We then use the ShapeRenderer component multiple times, passing different shapes and renderers as props, to demonstrate how the Bridge pattern allows us to render shapes using different renderers.
+
+### Use cases
+
+The Bridge pattern promotes loose coupling between the abstraction and implementation, making it easier to modify and extend them without affecting each other, it is particularly useful in scenarios as:
+
+#### 1. Handling Different Rendering Implementations
+
+```tsx showLineNumbers
+// Abstraction
+interface Component {
+  render(): JSX.Element;
+}
+
+// Implementations
+class WebComponent implements Component {
+  render(): JSX.Element {
+    return <div>This is a web component.</div>;
+  }
+}
+
+class MobileComponent implements Component {
+  render(): JSX.Element {
+    return <div>This is a mobile component.</div>;
+  }
+}
+
+// Bridge
+interface Renderer {
+  renderComponent(component: Component): JSX.Element;
+}
+
+class WebRenderer implements Renderer {
+  renderComponent(component: Component): JSX.Element {
+    return <div>[Web] {component.render()}</div>;
+  }
+}
+
+class MobileRenderer implements Renderer {
+  renderComponent(component: Component): JSX.Element {
+    return <div>[Mobile] {component.render()}</div>;
+  }
+}
+
+// Usage
+const webComponent = new WebComponent();
+const mobileComponent = new MobileComponent();
+
+const webRenderer = new WebRenderer();
+const mobileRenderer = new MobileRenderer();
+
+const App: React.FC = () => {
+  return (
+    <div>
+      {webRenderer.renderComponent(webComponent)}
+      {webRenderer.renderComponent(mobileComponent)}
+      {mobileRenderer.renderComponent(webComponent)}
+      {mobileRenderer.renderComponent(mobileComponent)}
+    </div>
+  );
+};
+
+export default App;
+```
+
+In this example, we have the Component interface representing the abstraction, which defines the render() method. The WebComponent and MobileComponent classes implement the Component interface and provide the concrete rendering implementation for the web and mobile platforms.
+
+The Renderer interface represents the bridge between the abstraction and the implementation. The WebRenderer and MobileRenderer classes implement the Renderer interface and provide the specific rendering logic for the web and mobile platforms.
+
+The App component uses the Bridge pattern to render components using different renderers. We create instances of the components (webComponent and mobileComponent) and renderers (webRenderer and mobileRenderer), and then we use the respective renderers to render the components based on the platform. This demonstrates how the Bridge pattern allows us to handle different rendering implementations while keeping the components decoupled from the rendering logic.
+
+#### 2. Database Abstraction
+
+```tsx showLineNumbers
+// Abstraction
+interface Database {
+  query(query: string): void;
+}
+
+// Implementations
+class MySQLDatabase implements Database {
+  query(query: string): void {
+    console.log(`[MySQL] Executing query: ${query}`);
+  }
+}
+
+class PostgreSQLDatabase implements Database {
+  query(query: string): void {
+    console.log(`[PostgreSQL] Executing query: ${query}`);
+  }
+}
+
+// Bridge
+interface QueryExecutor {
+  executeQuery(query: string): void;
+}
+
+class DatabaseExecutor implements QueryExecutor {
+  constructor(private database: Database) {}
+
+  executeQuery(query: string): void {
+    this.database.query(query);
+  }
+}
+
+// Usage
+const mysqlDatabase = new MySQLDatabase();
+const postgresDatabase = new PostgreSQLDatabase();
+
+const mysqlExecutor = new DatabaseExecutor(mysqlDatabase);
+const postgresExecutor = new DatabaseExecutor(postgresDatabase);
+
+mysqlExecutor.executeQuery("SELECT * FROM users");
+postgresExecutor.executeQuery("SELECT * FROM orders");
+```
+
+In this example, we have the Database interface representing the abstraction, which defines the query() method. The MySQLDatabase and PostgreSQLDatabase classes implement the Database interface and provide the concrete implementation for executing queries on the MySQL and PostgreSQL databases, respectively.
+
+The QueryExecutor interface represents the bridge between the abstraction and the implementation. The DatabaseExecutor class implements the QueryExecutor interface and encapsulates
+
+### Advantages
+
+- Decouples abstraction from implementation, promoting flexibility and modularity.
+- Allows variations in the abstraction and implementation to evolve independently.
+- Simplifies the addition of new abstractions or implementations without modifying existing code.
+- Provides a clear separation of concerns between the abstraction and implementation.
+
+### Disadvantages
+
+- Increases complexity and introduces additional classes and interfaces.
+- Requires careful design and planning to define the abstraction and implementation hierarchies.
+- Overuse of the pattern can lead to an overly complex and fragmented codebase.
