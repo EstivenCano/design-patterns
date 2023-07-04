@@ -1,0 +1,283 @@
+---
+title: Composite pattern
+description: Definition and example about the Composite pattern applied to the frontend
+tags:
+  - composite-pattern_1
+  - use-cases_2
+  - 1-nested-menu_6
+  - 2-nested-layouts_6
+  - 3-tree-view_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Composite Pattern
+
+The Composite pattern is a structural design pattern that decouples an abstraction from its implementation, allowing them to vary independently. It provides a way to separate the abstraction and implementation into separate class hierarchies, enabling them to evolve and change independently of each other. The Composite pattern promotes loose coupling between the abstraction and implementation, making it easier to modify and extend them without affecting each other.
+
+Here is an example of how to use it in React, Typescript and functional components.
+
+```tsx showLineNumbers
+// Component interface
+interface UIComponent {
+  render(): JSX.Element;
+}
+
+// Leaf component
+class Button implements UIComponent {
+  constructor(private label: string) {}
+
+  render(): JSX.Element {
+    return <button>{this.label}</button>;
+  }
+}
+
+// Composite component
+class Panel implements UIComponent {
+  private components: UIComponent[] = [];
+
+  addComponent(component: UIComponent): void {
+    this.components.push(component);
+  }
+
+  removeComponent(component: UIComponent): void {
+    const index = this.components.indexOf(component);
+    if (index !== -1) {
+      this.components.splice(index, 1);
+    }
+  }
+
+  render(): JSX.Element {
+    return (
+      <div>
+        <h2>Panel</h2>
+        {this.components.map((component, index) => (
+          <div key={index}>{component.render()}</div>
+        ))}
+      </div>
+    );
+  }
+}
+
+// Usage
+const button1 = new Button("Button 1");
+const button2 = new Button("Button 2");
+
+const panel = new Panel();
+panel.addComponent(button1);
+panel.addComponent(button2);
+
+const App: React.FC = () => {
+  return <div>{panel.render()}</div>;
+};
+
+export default App;
+```
+
+In this example, we have the UIComponent interface representing the component interface. The Button class represents a leaf component that implements the UIComponent interface. The Panel class represents a composite component that also implements the UIComponent interface. The Panel class can contain a collection of UIComponent objects, which can be either Button or other composite instances.
+
+We create an example UI structure with nested buttons inside a panel. The render() method is implemented in each component to provide the rendering of the component and its children. By using the Composite pattern, we can treat individual buttons and the panel structure uniformly.
+
+### Use cases
+
+#### 1. Nested Menu
+
+In a web application, you might have a menu component that needs to support nested submenus. The Composite pattern can be applied to create a hierarchical structure of menu items, allowing you to easily render and manage the menu's nested structure.
+
+Example:
+
+```tsx showLineNumbers
+// Component interface
+interface MenuItem {
+  title: string;
+  subItems?: MenuItem[];
+}
+
+// Composite component
+const Menu: React.FC<{ items: MenuItem[] }> = ({ items }) => (
+  <ul>
+    {items.map((item) => (
+      <li key={item.title}>
+        {item.title}
+        {item.subItems && <Menu items={item.subItems} />}
+      </li>
+    ))}
+  </ul>
+);
+
+// Usage
+const App: React.FC = () => {
+  const menuItems: MenuItem[] = [
+    {
+      title: "Home",
+    },
+    {
+      title: "Products",
+      subItems: [
+        {
+          title: "Category 1",
+        },
+        {
+          title: "Category 2",
+          subItems: [
+            {
+              title: "Subcategory A",
+            },
+            {
+              title: "Subcategory B",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "About",
+    },
+  ];
+
+  return <Menu items={menuItems} />;
+};
+
+export default App;
+```
+
+In this example, the MenuItem interface represents the component interface, allowing menu items to have a title and an optional array of sub-items. The Menu component is the composite component that recursively renders the menu structure and submenus.
+
+#### 2. Nested Layouts
+
+In a layout system, you may need to create nested layouts where components can be nested within other components, forming a complex layout structure. The Composite pattern can be used to create a flexible and reusable layout system that supports nesting.
+
+Example:
+
+```tsx showLineNumbers
+// Component interface
+interface LayoutComponent {
+  render(): JSX.Element;
+}
+
+// Composite component
+class LayoutContainer implements LayoutComponent {
+  constructor(private children: LayoutComponent[]) {}
+
+  render(): JSX.Element {
+    return <div>{this.children.map((child) => child.render())}</div>;
+  }
+}
+
+// Leaf component
+class LayoutItem implements LayoutComponent {
+  constructor(private content: string) {}
+
+  render(): JSX.Element {
+    return <div>{this.content}</div>;
+  }
+}
+
+// Usage
+const App: React.FC = () => {
+  const layoutItems: LayoutComponent[] = [
+    new LayoutItem("Item 1"),
+    new LayoutContainer([new LayoutItem("Item 2"), new LayoutItem("Item 3")]),
+    new LayoutItem("Item 4"),
+  ];
+
+  const layout = new LayoutContainer(layoutItems);
+
+  return layout.render();
+};
+
+export default App;
+```
+
+In this example, the LayoutComponent interface represents the component interface for the layout system. The LayoutContainer class is the composite component that can contain other LayoutComponent objects, such as other containers or leaf items. The LayoutItem class represents a leaf component with a specific content.
+
+#### 3. Tree View
+
+In a tree view component, you may have a hierarchical structure of nodes that can be expanded or collapsed. The Composite pattern can be applied to create a tree view component that handles both individual tree nodes and the entire tree structure uniformly.
+
+Example:
+
+```tsx showLineNumbers
+// Component interface
+interface TreeNode {
+  label: string;
+  children?: TreeNode[];
+}
+
+// Composite component
+const TreeView: React.FC<{ node: TreeNode }> = ({ node }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpansion = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <ul>
+      <li>
+        <div onClick={toggleExpansion}>
+          {expanded ? "▼" : "►"} {node.label}
+        </div>
+        {expanded && node.children && (
+          <ul>
+            {node.children.map((child) => (
+              <li key={child.label}>
+                <TreeView node={child} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    </ul>
+  );
+};
+
+// Usage
+const App: React.FC = () => {
+  const tree: TreeNode = {
+    label: "Root",
+    children: [
+      {
+        label: "Node 1",
+        children: [
+          {
+            label: "Subnode A",
+          },
+          {
+            label: "Subnode B",
+          },
+        ],
+      },
+      {
+        label: "Node 2",
+        children: [
+          {
+            label: "Subnode C",
+          },
+          {
+            label: "Subnode D",
+          },
+        ],
+      },
+    ],
+  };
+
+  return <TreeView node={tree} />;
+};
+
+export default App;
+```
+
+In this example, the TreeNode interface represents the component interface for tree nodes, which have a label and can optionally have children. The TreeView component is the composite component that renders the tree view structure recursively. It handles the expansion and collapsing of nodes using state.
+
+### Advantages
+
+- **Simplifies client code**: The Composite pattern provides a consistent interface for both leaf and composite components, reducing complexity in client code that interacts with the structure.
+- **Flexibility in component composition**: The pattern allows dynamic composition of components, enabling the creation of complex structures and the ability to add or remove components at runtime.
+- **Encapsulates hierarchy details**: The pattern encapsulates the hierarchy details within the composite classes, providing a clear separation between the client code and the internal structure.
+
+### Disadvantages
+
+- **Increased memory overhead**: The Composite pattern can introduce additional memory overhead due to the inclusion of composite objects and their relationships.
+- **Limited component-specific operations**: The uniformity provided by the pattern may limit certain operations or require additional checks when performing specific actions on individual leaf nodes.
+- **Potential performance impact**: The recursive nature of the pattern may impact performance when dealing with large composite structures.
