@@ -1,0 +1,255 @@
+---
+title: Adapter pattern
+description: Definition and example about the adapter pattern applied to the frontend
+tags:
+  - adapter-pattern_1
+  - use-cases_2
+  - 1-integration-of-third-party-libraries_6
+  - 2-data-transformation_6
+  - 3-browser-compatibility_6
+  - 4-component-interface-refactoring_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Adapter Pattern
+
+The Adapter pattern is a structural design pattern that allows objects with incompatible interfaces to work together. It acts as a bridge between two incompatible interfaces, converting the interface of one class into another interface that clients expect. This pattern is useful when integrating existing components or systems with different interfaces without modifying their source code
+
+To use the Adapter pattern in TypeScript, React, and functional components, you can follow these steps:
+
+1. Define the Target Interface: Identify the interface that your components expect to work with. This represents the desired interface that the adapter will conform to.
+
+2. Create the Adaptee: The Adaptee is the existing component or system with an incompatible interface. You will need to work with this existing component but cannot modify its source code.
+
+3. Implement the Adapter: Create a new class or function that acts as the adapter. It should implement the target interface and internally interact with the Adaptee.
+
+4. Adapt the Interface: Within the adapter, provide the necessary logic to adapt the interface of the Adaptee to match the target interface. This may involve mapping, transforming, or reformatting the data or function calls.
+
+5. Use the Adapter in React Components: In your React components, create an instance of the adapter and use it to interact with the Adaptee. The adapter should provide the adapted interface that conforms to the target interface expected by your components.
+
+Here's an example of using the Adapter pattern in TypeScript, React, and functional components:
+
+```tsx showLineNumbers
+// Target interface
+interface IDataProvider {
+  fetchData(): Promise<any>;
+}
+
+// Adaptee with incompatible interface
+class ThirdPartyAPI {
+  request(): Promise<any> {
+    // Make API request with incompatible interface...
+  }
+}
+
+// Adapter
+class ThirdPartyAPIAdapter implements IDataProvider {
+  private thirdPartyAPI: ThirdPartyAPI;
+
+  constructor() {
+    this.thirdPartyAPI = new ThirdPartyAPI();
+  }
+
+  fetchData(): Promise<any> {
+    // Adapt the interface and call the method on the Adaptee
+    return this.thirdPartyAPI.request();
+  }
+}
+
+// React component using the adapter
+import React, { useEffect, useState } from "react";
+
+const MyComponent = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const adapter = new ThirdPartyAPIAdapter();
+      const response = await adapter.fetchData();
+      setData(response);
+    };
+
+    fetchData();
+  }, []);
+
+  return <div>{/* Render the data */}</div>;
+};
+
+export default MyComponent;
+```
+
+In the example above, we define the target interface IDataProvider that represents the expected interface for fetching data. The ThirdPartyAPI class is the existing component with an incompatible interface. We create the ThirdPartyAPIAdapter class that implements the IDataProvider interface and internally interacts with the ThirdPartyAPI by adapting its interface to match the target interface.
+
+In the React component MyComponent, we create an instance of the ThirdPartyAPIAdapter and use it to fetch data. The adapter provides the adapted interface, allowing the component to work with the ThirdPartyAPI seamlessly.
+
+By using the Adapter pattern, we can integrate the existing component or system with an incompatible interface into our React application without modifying its source code.
+
+### Use cases
+
+The Adapter pattern allows you to achieve seamless integration and maintain compatibility between components with different interfaces, promoting code reusability and modularity. It helps to decouple the client code from the complexities of interacting with incompatible interfaces, enabling smoother development and easier maintenance of your application, particularly useful in scenarios as:
+
+#### 1. Integration of Third-Party Libraries
+
+The Adapter pattern can be used to integrate third-party libraries or components with different interfaces into a React application. By creating an adapter that conforms to the expected interface of the application, the incompatible library can be seamlessly integrated.
+
+```tsx showLineNumbers
+// ThirdPartyLibrary.js
+class ThirdPartyLibrary {
+  // Incompatible interface...
+}
+
+// Adapter.js
+class Adapter {
+  constructor() {
+    this.thirdPartyLibrary = new ThirdPartyLibrary();
+  }
+
+  // Adapter methods that conform to the expected interface...
+}
+
+// App.js
+import React from "react";
+import Adapter from "./Adapter";
+
+const adapter = new Adapter();
+
+const App = () => {
+  // Use the adapted interface
+  const data = adapter.fetchData();
+
+  // Component rendering and logic...
+};
+
+export default App;
+```
+
+#### 2. Data Transformation
+
+The Adapter pattern can be used to transform data from one format to another. For example, when consuming an API with a different data structure, an adapter can be created to convert the API response into a format that the React components expect.
+
+```tsx showLineNumbers
+// ApiService.js
+class ApiService {
+  // API methods with a different data structure...
+}
+
+// Adapter.js
+class Adapter {
+  constructor() {
+    this.apiService = new ApiService();
+  }
+
+  async fetchData() {
+    const response = await this.apiService.fetchData();
+    // Transform the response to the expected format...
+    return transformedData;
+  }
+}
+
+// App.js
+import React, { useEffect, useState } from "react";
+import Adapter from "./Adapter";
+
+const adapter = new Adapter();
+
+const App = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const transformedData = await adapter.fetchData();
+      setData(transformedData);
+    };
+
+    fetchData();
+  }, []);
+
+  // Component rendering and logic...
+};
+
+export default App;
+```
+
+#### 3. Browser Compatibility
+
+The Adapter pattern can be used to handle browser compatibility issues by providing a unified interface for accessing different browser-specific features or APIs. This allows the application to abstract away the differences between browsers and ensure consistent behavior across different environments.
+
+```tsx showLineNumbers
+// BrowserAPIAdapter.js
+class BrowserAPIAdapter {
+  requestNotificationPermission() {
+    // Adapt the interface to request notification permission using browser APIs
+    if ("Notification" in window) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          // Permission granted logic...
+        } else if (permission === "denied") {
+          // Permission denied logic...
+        } else {
+          // Permission dismissed logic...
+        }
+      });
+    } else {
+      // Browser does not support notifications...
+    }
+  }
+}
+
+// App.js
+import React from "react";
+import BrowserAPIAdapter from "./BrowserAPIAdapter";
+
+const browserAPIAdapter = new BrowserAPIAdapter();
+
+const App = () => {
+  // Use the adapted interface to access browser APIs
+  browserAPIAdapter.requestNotificationPermission();
+
+  // Component rendering and logic...
+};
+
+export default App;
+```
+
+#### 4. Component Interface Refactoring
+
+The Adapter pattern can be used to refactor component interfaces without breaking existing dependencies. By creating adapters that wrap the original components, you can introduce new interfaces or modify existing ones while ensuring compatibility with the existing codebase.
+
+```tsx showLineNumbers
+// OriginalComponent.js
+const OriginalComponent = ({ prop1, prop2 }) => {
+  // Original component logic...
+};
+
+// AdapterComponent.js
+const AdapterComponent = ({ newProp1, newProp2 }) => {
+  // Transform and map the props to the original component's interface
+  const prop1 = transformNewPropToProp1(newProp1);
+  const prop2 = transformNewPropToProp2(newProp2);
+
+  return <OriginalComponent prop1={prop1} prop2={prop2} />;
+};
+
+// App.js
+import React from "react";
+import AdapterComponent from "./AdapterComponent";
+
+const App = () => {
+  return <AdapterComponent newProp1='value1' newProp2='value2' />;
+};
+
+export default App;
+```
+
+### Advantages
+
+- **Compatibility**: The Adapter pattern allows the integration of components or systems with incompatible interfaces, enabling them to work together seamlessly. It avoids the need to modify existing code and promotes code reusability.
+
+- **Flexibility**: Adapters provide a flexible solution for incorporating external components or systems into a React application. They decouple the application from the specific implementation details of the external component, allowing for easier maintenance and future updates.
+
+### Disadvantages
+
+- **Increased Complexity**: Introducing adapters adds an additional layer of complexity to the system, potentially making it harder to understand and maintain. Care must be taken to design and document adapters effectively to minimize complexity.
+
+- **Performance Overhead**: Adapters may introduce a performance overhead due to the additional indirection and data transformation involved. The impact on performance should be considered, especially in scenarios with high-frequency or data-intensive operations.
