@@ -5,17 +5,80 @@ tags:
   - facade-pattern_1
   - use-cases_2
   - 1-simplifying-complex-apis_6
-  - 2-integration-with-external-systems_6
-  - 3-component-composition-and-configuration_6
-  - 4-data-fetching-and-state-management_6
-  - 5-third-party-library-integration_6
+  - 2-component-composition-and-configuration_6
+  - 3-third-party-library-integration_6
   - advantages_2
   - disadvantages_2
 ---
 
 # Facade Pattern
 
-The Facade pattern provides a simplified interface to a complex system of classes or APIs. It acts as a higher-level interface that encapsulates the underlying complexity, making it easier to use and understand. It promotes loose coupling between components and improves code readability and maintainability.
+The **Facade pattern** provides a simplified interface to a complex system of classes or APIs. It acts as a higher-level interface that encapsulates the underlying complexity, making it easier to use and understand. It promotes loose coupling between components and improves code readability and maintainability.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+import { API } from "api-library";
+
+// API Facade for simplified API interactions
+const APIFacade = {
+  getUserData: async (userId: string) => {
+    try {
+      const userData = await API.getUser(userId);
+      // Process and return the simplified user data
+      return {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch user data.");
+    }
+  },
+  // Other simplified API methods...
+};
+
+const UserProfile: React.FC<{ userId: string }> = ({ userId }) => {
+  const [loading, setLoading] = React.useState(true);
+  const [userData, setUserData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const simplifiedUserData = await APIFacade.getUserData(userId);
+        setUserData(simplifiedUserData);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        // Handle error state
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userData) {
+    return <div>User not found.</div>;
+  }
+
+  return (
+    <div>
+      <h1>{userData.name}</h1>
+      <p>Email: {userData.email}</p>
+      {/* Render additional user details */}
+    </div>
+  );
+};
+
+export default UserProfile;
+```
+
+In this example, we have an APIFacade that acts as a simplified interface for interacting with the API. It provides a method getUserData that fetches user data for a given userId and returns a simplified version of the data. The UserProfile component utilizes the APIFacade to fetch and display the user's name and email. It handles loading and error states, and provides a clean and simplified interface for interacting with the API.
 
 ### Use cases
 
@@ -67,53 +130,7 @@ const App: React.FC = () => {
 export default App;
 ```
 
-#### 2. Integration with External Systems:
-
-The Facade pattern can be used when integrating with external systems, such as APIs or services. It abstracts away the complexity of the integration and provides a simplified interface that hides the implementation details.
-
-Example in React and functional components:
-
-```tsx showLineNumbers
-import React from "react";
-import { ThirdPartyService } from "third-party-service";
-
-// Facade for ThirdPartyService
-const ServiceFacade = {
-  fetchData: async () => {
-    const service = new ThirdPartyService();
-    const data = await service.fetchData();
-    // Process and return the simplified data
-    return data.map((item) => ({ id: item.id, name: item.name }));
-  },
-  // Other simplified methods...
-};
-
-const App = () => {
-  const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const simplifiedData = await ServiceFacade.fetchData();
-      setData(simplifiedData);
-    };
-
-    fetchData();
-  }, []);
-
-  return (
-    <div>
-      {/* Render the simplified data */}
-      {data.map((item) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
-    </div>
-  );
-};
-
-export default App;
-```
-
-#### 3. Component Composition and Configuration:
+#### 2. Component Composition and Configuration:
 
 The Facade pattern can be used to simplify the composition and configuration of complex components or component hierarchies. It provides a unified interface for creating and configuring components, hiding the details of their internal structure.
 
@@ -148,65 +165,7 @@ const App: React.FC = () => {
 export default App;
 ```
 
-#### 4. Data Fetching and State Management:
-
-The Facade pattern can be used to abstract the complexities of data fetching and state management. It provides a simplified interface for fetching data, handling loading and error states, and updating the application state.
-
-Example in React and functional components:
-
-```tsx showLineNumbers
-import React from "react";
-import { DataAPI } from "data-library";
-
-// Data Facade for simplified data fetching and state management
-const DataFacade = {
-  fetchData: async () => {
-    try {
-      const data = await DataAPI.fetchData();
-      // Process and return the simplified data
-      return data.map((item) => ({ id: item.id, name: item.name }));
-    } catch (error) {
-      throw new Error("Failed to fetch data.");
-    }
-  },
-  // Other simplified state management methods...
-};
-
-const App = () => {
-  const [loading, setLoading] = React.useState(true);
-  const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const simplifiedData = await DataFacade.fetchData();
-        setData(simplifiedData);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        // Handle error state
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  return (
-    <div>
-      {/* Render loading or data */}
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        data.map((item) => <div key={item.id}>{item.name}</div>)
-      )}
-    </div>
-  );
-};
-
-export default App;
-```
-
-#### 5. Third-Party Library Integration:
+#### 3. Third-Party Library Integration:
 
 The Facade pattern can be used to integrate with third-party libraries or services, providing a simplified interface that aligns with the application's needs. It abstracts away the complexities of the underlying library, making it easier to use and maintain.
 
