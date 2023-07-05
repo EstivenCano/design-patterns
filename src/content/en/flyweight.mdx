@@ -1,0 +1,142 @@
+---
+title: Flyweight pattern
+description: Definition and example about the Flyweight pattern applied to the frontend
+tags:
+  - flyweight-pattern_1
+  - use-cases_2
+  - 1-icon-library_6
+  - 2-caching_6
+  - 3-text-formatting_6
+  - 4-game-development_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Flyweight Pattern
+
+The Flyweight pattern is a structural design pattern that focuses on minimizing memory usage by sharing common data across multiple objects. It achieves this by separating intrinsic (shared) and extrinsic (unique) state in objects and storing the intrinsic state externally. This allows multiple objects to share the same intrinsic state, reducing memory footprint and improving performance.
+
+### Use cases
+
+The Flyweight pattern offers a versatile approach to object creation and configuration, particularly useful in scenarios as:
+
+#### 1. Icon Library:
+
+In a UI application, there might be a need to display a large number of icons. Instead of creating a separate instance of an icon component for each usage, the Flyweight pattern can be employed to store and reuse the common intrinsic state (such as the icon's shape or color) across multiple instances of the component. This reduces memory usage and improves rendering performance.
+
+```tsx showLineNumbers
+import React from "react";
+import { IconLibrary } from "icon-library";
+
+const IconComponent: React.FC<{ name: string }> = ({ name }) => {
+  const iconData = IconLibrary.getIconData(name); // Retrieve icon data from the library
+
+  return (
+    <div>
+      {/* Render the icon using the retrieved icon data */}
+      <svg>
+        <path d={iconData.path} fill={iconData.color} />
+      </svg>
+    </div>
+  );
+};
+```
+
+In this example, the IconLibrary is a flyweight object that contains a collection of icon data. The IconComponent receives the name of the icon and retrieves the corresponding icon data from the library. The icon's intrinsic state, such as the path and color, is shared among multiple instances of the IconComponent, reducing memory usage and improving rendering performance.
+
+#### 2. Caching:
+
+When dealing with expensive operations, such as network requests or heavy computations, the Flyweight pattern can be used to cache the results. The intrinsic state represents the unique combination of input parameters, while the extrinsic state represents the cached result. By reusing the cached results instead of recomputing them, the pattern can improve performance and reduce resource consumption.
+
+```tsx showLineNumbers
+import React, { useEffect, useState } from "react";
+import { DataAPI } from "data-api";
+
+const CachedDataComponent: React.FC = () => {
+  const [cachedData, setCachedData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const cachedResult = DataAPI.getFromCache("unique-key");
+      if (cachedResult) {
+        setCachedData(cachedResult);
+      } else {
+        const data = await DataAPI.fetchData();
+        DataAPI.cacheData("unique-key", data);
+        setCachedData(data);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return <div>{cachedData}</div>;
+};
+```
+
+In this example, the DataAPI acts as a flyweight object that manages the caching of data. The CachedDataComponent retrieves data from the cache using a unique key. If the data is present in the cache, it is used directly. Otherwise, the data is fetched from an API, cached using the DataAPI, and then rendered. By caching and reusing data, the Flyweight pattern improves performance by avoiding redundant API requests.
+
+#### 3. Text Formatting:
+
+In text processing applications, there can be instances where the same formatting is applied to multiple sections of the text. Instead of storing formatting information with each individual section, the Flyweight pattern can be used to store the formatting state externally and share it among multiple sections. This reduces the memory required to store the text and improves rendering performance.
+
+```tsx showLineNumbers
+import React from "react";
+import { TextFormatter } from "text-formatter";
+
+const FormattedTextComponent: React.FC = () => {
+  const formattedText = TextFormatter.format("Lorem ipsum", {
+    font: "Arial",
+    size: "12px",
+    color: "red",
+  });
+
+  return <div style={formattedText}>{formattedText.text}</div>;
+};
+```
+
+In this example, the TextFormatter acts as a flyweight object that stores the formatting styles for text. The FormattedTextComponent uses the TextFormatter to format the text with the desired font, size, and color. By storing the formatting state externally and reusing it across multiple text components, the Flyweight pattern optimizes memory usage and improves rendering performance.
+
+#### 4. Game Development:
+
+In game development, the Flyweight pattern can be used to optimize the rendering of game objects that share common characteristics. For example, in a simulation game, multiple instances of the same object (e.g., trees, rocks) can be present in the game world. By using the Flyweight pattern, the intrinsic state of the objects (such as their shape or texture) can be shared, reducing memory usage and improving rendering performance.
+
+```tsx showLineNumbers
+import React from "react";
+import { GameObjectFactory } from "game-object-factory";
+
+const GameComponent: React.FC = () => {
+  useEffect(() => {
+    const gameObjectFactory = new GameObjectFactory();
+
+    // Create multiple instances of the same object with shared intrinsic state
+    const object1 = gameObjectFactory.createGameObject("tree");
+    const object2 = gameObjectFactory.createGameObject("tree");
+    const object3 = gameObjectFactory.createGameObject("tree");
+
+    // Manipulate and render game objects...
+  }, []);
+
+  return <canvas>Game Canvas</canvas>;
+};
+```
+
+In this example, the GameObjectFactory acts asa flyweight object that creates game objects with shared intrinsic state. The GameComponent uses the GameObjectFactory to create multiple instances of the same object, in this case, trees. By sharing the intrinsic state, such as the tree's shape or texture, among the game objects, the Flyweight pattern reduces memory usage and improves rendering performance in game development scenarios.
+
+### Advantages
+
+- **Simplifies Object Construction**: The Flyweight pattern simplifies the construction of complex objects by breaking down the construction process into small, manageable steps. This makes it easier to create and configure objects with many optional parameters.
+
+- **Improves Readability**: The Flyweight pattern enhances code readability by providing clear and descriptive methods for setting object properties. It makes the code more expressive and self-explanatory.
+
+- **Separates Construction from Representation**: The Flyweight pattern separates the construction logic from the final representation of the object. This separation allows different Flyweights to create different representations of the same object, providing flexibility and extensibility.
+
+- **Facilitates Step-by-Step Construction**: The Flyweight pattern allows constructing objects incrementally, step by step. This enables the Flyweight to enforce certain rules or constraints during each step, ensuring the correctness and integrity of the resulting object.
+
+### Disadvantages
+
+- **Increased Complexity**: Implementing the Flyweight pattern can introduce additional complexity to the codebase, as it requires defining separate Flyweight classes and managing the construction process. This complexity may not be justified for simple object creation scenarios.
+
+- **Potential Overhead**: The Flyweight pattern may introduce additional overhead due to the need for creating separate Flyweight objects and executing multiple method calls during the construction process. In performance-critical scenarios, this overhead could be a concern.
+
+- **Limited Applicability**: The Flyweight pattern is most beneficial when dealing with complex objects that require multiple configuration steps. For simpler objects with a limited number of properties, using the Flyweight pattern may be overkill and add unnecessary complexity.
