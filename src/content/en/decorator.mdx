@@ -1,0 +1,241 @@
+---
+title: Decorator pattern
+description: Definition and example about the Decorator pattern applied to the frontend
+tags:
+  - decorator-pattern_1
+  - use-cases_2
+  - 1-enhancing-component-functionality_6
+  - 2-adding-logging-to-functions_6
+  - 3-styling-enhancements_6
+  - 4-data-transformation_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Decorator Pattern
+
+The Decorator pattern is a structural design pattern that allows adding new behavior to an existing object dynamically. It enables the flexible modification of an object's functionality by wrapping it with one or more decorators, without affecting the original object's structure.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+
+// Base Component
+const Button: React.FC = () => {
+  return <button>Click Me</button>;
+};
+
+// Decorator Function
+const withHoverEffect = (Component: React.FC): React.FC => {
+  return () => {
+    const [isHovered, setIsHovered] = React.useState(false);
+
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovered(false);
+    };
+
+    return (
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ backgroundColor: isHovered ? "lightblue" : "transparent" }}>
+        <Component />
+      </div>
+    );
+  };
+};
+
+// Usage
+const EnhancedButton = withHoverEffect(Button);
+
+const App: React.FC = () => {
+  return <EnhancedButton />;
+};
+
+export default App;
+```
+
+In this example, we have a base component called Button that represents a basic button component. The withHoverEffect decorator function takes a component as input and returns a new component that wraps the input component with hover effect functionality.
+
+The withHoverEffect decorator adds state management for the hover effect by using the useState hook. It tracks whether the button is currently being hovered over and updates the background color of the wrapper div accordingly.
+
+Finally, the EnhancedButton component is created by applying the withHoverEffect decorator to the Button component. When rendering the EnhancedButton component in the App component, it will have the added hover effect functionality provided by the decorator.
+
+### Use cases
+
+The key idea is to use decorators to dynamically extend or modify the behavior of components, functions, or data in a flexible and reusable way, here are some use cases of how to use it:
+
+#### 1. Enhancing Component Functionality
+
+In a React application, you may have a base component that needs additional functionality without modifying its original implementation. The Decorator pattern can be applied to dynamically extend the behavior of the component.
+
+```tsx showLineNumbers
+// Base Component
+const Button: React.FC = () => {
+  return <button>Click Me</button>;
+};
+
+// Decorator Component
+const withHoverEffect = (Component: React.FC): React.FC => {
+  return () => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovered(false);
+    };
+
+    return (
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ backgroundColor: isHovered ? "lightblue" : "transparent" }}>
+        <Component />
+      </div>
+    );
+  };
+};
+
+// Usage
+const EnhancedButton = withHoverEffect(Button);
+
+const App: React.FC = () => {
+  return <EnhancedButton />;
+};
+
+export default App;
+```
+
+In this example, the Button component represents the base component that provides the basic button functionality. The withHoverEffect decorator wraps the Button component and adds a hover effect by changing the background color when hovered.
+
+#### 2. Adding Logging to Functions
+
+In an application where logging is required for certain functions, the Decorator pattern can be used to add logging behavior without modifying the original functions.
+
+```tsx showLineNumbers
+// Original Function
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// Decorator Function
+function withLogging(fn: (...args: any[]) => any): (...args: any[]) => any {
+  return (...args: any[]) => {
+    console.log(`Calling function with arguments: ${args}`);
+    const result = fn(...args);
+    console.log(`Function result: ${result}`);
+    return result;
+  };
+}
+
+// Usage
+const enhancedAdd = withLogging(add);
+
+console.log(enhancedAdd(2, 3));
+// Output: Calling function with arguments: 2,3
+//         Function result: 5
+//         5
+```
+
+In this example, the add function represents the original function that performs addition. The withLogging decorator wraps the add function and adds logging behavior before and after executing the function.
+
+#### 3. Styling Enhancements:
+
+```tsx showLineNumbers
+import React from "react";
+
+// Base Component
+const Card: React.FC = ({ children }) => {
+  return <div className='card'>{children}</div>;
+};
+
+// Decorator Function to add a CSS class dynamically
+const withDynamicStyle = (Component: React.FC, className: string): React.FC => {
+  return () => {
+    return (
+      <div className={className}>
+        <Component />
+      </div>
+    );
+  };
+};
+
+// Usage
+const CardWithRedBorder = withDynamicStyle(Card, "red-border");
+
+const App: React.FC = () => {
+  return <CardWithRedBorder>Card Content</CardWithRedBorder>;
+};
+
+export default App;
+```
+
+In this example, we have a base component called Card that represents a simple card component. The withDynamicStyle decorator function takes a component and a CSS class name as input and returns a new component that wraps the input component with the specified class name.
+
+#### 4. Data Transformation:
+
+```tsx showLineNumbers
+import React from "react";
+
+// Base Component
+const UserProfile: React.FC<{ user: { name: string; age: number } }> = ({
+  user,
+}) => {
+  return (
+    <div>
+      <h2>User Profile</h2>
+      <p>Name: {user.name}</p>
+      <p>Age: {user.age}</p>
+    </div>
+  );
+};
+
+// Decorator Function to map user data to a different structure
+const withMappedData = (
+  Component: React.FC,
+  mapper: (data: any) => any
+): React.FC => {
+  return ({ data }) => {
+    const transformedData = mapper(data);
+    return <Component {...transformedData} />;
+  };
+};
+
+// Usage
+const UserProfileWithTransformedData = withMappedData(UserProfile, (data) => ({
+  user: {
+    name: data.username,
+    age: data.age,
+  },
+}));
+
+const App: React.FC = () => {
+  const userData = { username: "John Doe", age: 30 };
+
+  return <UserProfileWithTransformedData data={userData} />;
+};
+
+export default App;
+```
+
+In this example, we have a base component called UserProfile that displays user profile information. The withMappedData decorator function takes a component and a mapper function as input and returns a new component that wraps the input component with transformed data. The mapper function takes the original data and maps it to a different structure.
+
+### Advantages
+
+- **Dynamic behavior extension**: The Decorator pattern allows adding new functionality to an object at runtime, enabling flexibility and adaptability.
+- **Open-closed principle**: The pattern follows the open-closed principle, allowing the addition of new decorators without modifying existing code.
+- **Single Responsibility Principle (SRP)**: Each decorator has a specific responsibility, ensuring separation of concerns.
+
+### Disadvantages
+
+- **Complexity**: The use of decorators can increase the complexity of the codebase, especially when multiple decorators are involved.
+- **Order of decorators**: The order in which decorators are applied can be crucial, as it may affect the resulting behavior.
+- **Potential performance impact**: Overuse of decorators can impact performance due to the additional layers of indirection.
