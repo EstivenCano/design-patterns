@@ -1,0 +1,194 @@
+---
+title: Proxy pattern
+description: Definition and example about the Proxy pattern applied to the frontend
+tags:
+  - proxy-pattern_1
+  - use-cases_2
+  - 1-access-control_6
+  - 2-caching_6
+  - 3-lazy-loading_6
+  - 4-logging-and-debugging_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Proxy Pattern
+
+The Proxy pattern provides a surrogate or placeholder object for another object and controls access to it. It acts as an intermediary between the client and the target object, allowing additional functionality to be added without modifying the original object. The Proxy pattern is useful when you want to control access to an object, add caching or memoization, implement lazy loading, or provide security checks.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+
+interface ImageComponentProps {
+  src: string;
+}
+
+const ImageComponent: React.FC<ImageComponentProps> = ({ src }) => {
+  return <img src={src} alt='Image' />;
+};
+
+const ImageProxyComponent: React.FC<ImageComponentProps> = ({ src }) => {
+  const [loaded, setLoaded] = React.useState(false);
+
+  const handleImageLoad = () => {
+    setLoaded(true);
+  };
+
+  return (
+    <div>
+      {loaded ? <ImageComponent src={src} /> : <p>Loading image...</p>}
+      {!loaded && (
+        <img
+          src={src}
+          alt='Image'
+          onLoad={handleImageLoad}
+          style={{ display: "none" }}
+        />
+      )}
+    </div>
+  );
+};
+```
+
+In this example, the ImageProxyComponent acts as a proxy for the ImageComponent. It initially renders a loading message and hides the actual image. When the image is loaded, the handleImageLoad function is called, and the ImageComponent is rendered with the image source. This allows lazy loading of images and provides a placeholder until the image is fully loaded.
+
+### Use cases
+
+The Proxy pattern is particularly useful in scenarios as:
+
+#### 1. Access Control:
+
+Restricting access to certain components or resources based on user roles or permissions.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface AdminComponentProps {
+  // Props specific to the admin component
+}
+
+const AdminComponent: React.FC<AdminComponentProps> = ({ children }) => {
+  // Render admin-specific component logic and UI
+  return <div>{children}</div>;
+};
+
+const UserComponentProxy: React.FC = () => {
+  // Check user role or permission
+  const isAdmin = checkUserPermissions();
+
+  if (isAdmin) {
+    return (
+      <AdminComponent>
+        {/* Render admin-specific components and content */}
+      </AdminComponent>
+    );
+  }
+
+  // Render an alternative component or access denied message
+  return <AccessDeniedComponent />;
+};
+```
+
+In this example, the UserComponentProxy acts as a proxy for the AdminComponent. It checks the user's role or permission to determine if they are an admin. If the user is an admin, the AdminComponent is rendered with its specific components and content. Otherwise, an alternative component or an access denied message can be displayed.
+
+#### 2. Caching:
+
+Implementing a caching mechanism for expensive operations, such as API calls, to improve performance and reduce redundant requests.
+
+```tsx showLineNumbers
+import React, { useEffect, useState } from "react";
+import { fetchData } from "./api";
+
+const DataComponent: React.FC = () => {
+  const [data, setData] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchData().then((response) => {
+      setData(response);
+    });
+  }, []);
+
+  return <div>{data}</div>;
+};
+
+const CachedDataComponentProxy: React.FC = () => {
+  const [cachedData, setCachedData] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!cachedData) {
+      fetchData().then((response) => {
+        setCachedData(response);
+      });
+    }
+  }, [cachedData]);
+
+  return <div>{cachedData}</div>;
+};
+```
+
+In this example, the CachedDataComponentProxy acts as a proxy for the DataComponent. It first checks if the data is already cached (cachedData). If it is, it renders the cached data without making a redundant API call. Otherwise, it makes the API call to fetch the data and caches it for subsequent renders.
+
+#### 3. Lazy Loading:
+
+Loading and rendering components or resources on-demand when they are actually needed, rather than loading them all at once.
+
+```tsx showLineNumbers
+import React, { lazy, Suspense } from "react";
+
+const LazyLoadedComponent = lazy(() => import("./LazyLoadedComponent"));
+
+const AppComponent: React.FC = () => {
+  return (
+    <div>
+      <h1>App Component</h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyLoadedComponent />
+      </Suspense>
+    </div>
+  );
+};
+```
+
+In this example, the AppComponent uses the Proxy pattern to lazily load the LazyLoadedComponent only when it is actually needed. The lazy function from React allows us to asynchronously import the component and the Suspense component provides a fallback UI during the loading process.
+
+#### 4. Logging and Debugging:
+
+Logging function calls, tracking performance metrics, or adding debug information to aid in debugging and troubleshooting.
+
+```tsx showLineNumbers
+import React from "react";
+
+const ClickableComponent: React.FC = () => {
+  const handleClick = () => {
+    // Performan action on click
+    console.log("Button clicked");
+  };
+
+  return <button onClick={handleClick}>Click me</button>;
+};
+
+const LoggingComponentProxy: React.FC = () => {
+  const logClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("Button clicked");
+  };
+
+  return <ClickableComponent onClick={logClick} />;
+};
+```
+
+In this example, the LoggingComponentProxy acts as a proxy for the ClickableComponent. Instead of directly handling the click event in the ClickableComponent, the LoggingComponentProxy intercepts the event and logs the button click. This allows for additional logging or tracking functionality to be added without modifying the original ClickableComponent.
+
+### Advantages
+
+- Provides a level of indirection, allowing for additional functionality to be added without modifying the original object.
+- Controls access to the target object, enabling access control and security checks.
+- Enables caching, lazy loading, logging, and debugging capabilities.
+- Helps to decouple the client from the target object, promoting better code organization and maintainability.
+
+### Disadvantages
+
+- Introduces additional complexity due to the intermediary object.
+- Can impact performance if the proxy object is not implemented efficiently.
+- Requires careful consideration of the separation of concerns and proper abstraction to avoid tight coupling between the proxy and the target object.
