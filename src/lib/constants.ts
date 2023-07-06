@@ -96,7 +96,7 @@ export const patterns = [
       {
         id: 1,
         name: "chain-of-responsibility",
-        link: "/behavioral-patterns/chain-of-responsability",
+        link: "/behavioral-patterns/chain-of-responsibility",
         image:
           "https://refactoring.guru/images/patterns/cards/chain-of-responsibility-mini.png",
       },

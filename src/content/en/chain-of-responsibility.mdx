@@ -1,0 +1,364 @@
+---
+title: Chain of responsibility pattern
+description: Definition and example about the Chain of responsibility pattern applied to the frontend
+tags:
+  - chain-of-responsibility-pattern_1
+  - use-cases_2
+  - 1-request-handling_6
+  - 2-event-propagation_6
+  - 3-logging-and-error-handling_6
+  - 4-input-validation_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Chain Of Responsibility Pattern
+
+The Chain of Responsibility pattern is a behavioral design pattern that allows an object to pass a request along a chain of potential handlers until it is handled or reaches the end of the chain. Each handler in the chain has the opportunity to handle the request or pass it on to the next handler. This pattern promotes loose coupling between senders and receivers of requests and provides flexibility in dynamically configuring the chain and adding or removing handlers.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Request {
+  type: string;
+  payload: any;
+}
+
+interface Handler {
+  setNextHandler(handler: Handler): void;
+  handleRequest(request: Request): void;
+}
+
+class LoggerHandler implements Handler {
+  private nextHandler: Handler | null = null;
+
+  setNextHandler(handler: Handler): void {
+    this.nextHandler = handler;
+  }
+
+  handleRequest(request: Request): void {
+    if (request.type === "error") {
+      console.error(request.payload);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleRequest(request);
+    }
+  }
+}
+
+class ErrorHandler implements Handler {
+  private nextHandler: Handler | null = null;
+
+  setNextHandler(handler: Handler): void {
+    this.nextHandler = handler;
+  }
+
+  handleRequest(request: Request): void {
+    if (request.type === "error") {
+      // Perform error handling logic
+      console.log("Error handled:", request.payload);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleRequest(request);
+    }
+  }
+}
+
+const App: React.FC = () => {
+  const loggerHandler = new LoggerHandler();
+  const errorHandler = new ErrorHandler();
+
+  loggerHandler.setNextHandler(errorHandler);
+
+  const handleClick = () => {
+    const request: Request = {
+      type: "error",
+      payload: "An error occurred!",
+    };
+
+    loggerHandler.handleRequest(request);
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>Trigger Error</button>
+    </div>
+  );
+};
+```
+
+In this example, we have two handlers: LoggerHandler and ErrorHandler. The LoggerHandler logs requests of type "error" to the console, while the ErrorHandler performs error handling logic. The setNextHandler method allows the handlers to be chained together. In the App component, the loggerHandler is set as the first handler in the chain and the handleClick function triggers an error request, which is passed along the chain.
+
+### Use cases
+
+By applying the Chain of Responsibility pattern in React, TypeScript, and functional components, you can create a flexible and extensible system for handling requests, events, or other actions in a decoupled manner. It allows for the dynamic configuration of the chain, providing flexibility in the handling of requests and promoting code reusability and maintainability.
+
+The Chain of responsibility pattern is particularly useful in scenarios as:
+
+#### 1. Request Handling:
+
+Handling HTTP requests in an application, where each handler is responsible for processing a specific type of request (e.g., GET, POST, DELETE) and passing it on to the next handler in the chain.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Request {
+  type: string;
+  payload: any;
+}
+
+interface RequestHandler {
+  setNextHandler(handler: RequestHandler): void;
+  handleRequest(request: Request): void;
+}
+
+class GetRequestHandler implements RequestHandler {
+  private nextHandler: RequestHandler | null = null;
+
+  setNextHandler(handler: RequestHandler): void {
+    this.nextHandler = handler;
+  }
+
+  handleRequest(request: Request): void {
+    if (request.type === "GET") {
+      // Perform GET request logic
+      console.log("GET request handled:", request.payload);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleRequest(request);
+    }
+  }
+}
+
+class PostRequestHandler implements RequestHandler {
+  private nextHandler: RequestHandler | null = null;
+
+  setNextHandler(handler: RequestHandler): void {
+    this.nextHandler = handler;
+  }
+
+  handleRequest(request: Request): void {
+    if (request.type === "POST") {
+      // Perform POST request logic
+      console.log("POST request handled:", request.payload);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleRequest(request);
+    }
+  }
+}
+
+const App: React.FC = () => {
+  const getRequestHandler = new GetRequestHandler();
+  const postRequestHandler = new PostRequestHandler();
+
+  getRequestHandler.setNextHandler(postRequestHandler);
+
+  const handleRequest = (type: string, payload: any) => {
+    const request: Request = {
+      type,
+      payload,
+    };
+
+    getRequestHandler.handleRequest(request);
+  };
+
+  return (
+    <div>
+      <button onClick={() => handleRequest("GET", "https://api.com/data")}>
+        Make GET Request
+      </button>
+      <button onClick={() => handleRequest("POST", { data: "example" })}>
+        Make POST Request
+      </button>
+    </div>
+  );
+};
+```
+
+In this example, we have two request handlers: GetRequestHandler and PostRequestHandler. The getRequestHandler is set as the first handler in the chain, and the postRequestHandler is set as the next handler. When a request is made, it is passed along the chain until it is handled by the appropriate handler based on its type.
+
+#### 2. Event Propagation
+
+Propagating events in a component hierarchy, where each component in the hierarchy has the option to handle the event or delegate it to its parent component.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Event {
+  type: string;
+  payload: any;
+}
+
+interface EventHandler {
+  setNextHandler(handler: EventHandler): void;
+  handleEvent(event: Event): void;
+}
+
+const EventComponent: React.FC<{ onEvent: (event: Event) => void }> = ({
+  onEvent,
+}) => {
+  const handleClick = () => {
+    const event: Event = {
+      type: "click",
+      payload: "Button clicked",
+    };
+
+    onEvent(event);
+  };
+
+  return <button onClick={handleClick}>Click me</button>;
+};
+
+const ParentComponent: React.FC = () => {
+  const handleEvent = (event: Event) => {
+    if (event.type === "click") {
+      console.log("Click event handled:", event.payload);
+    }
+  };
+
+  return (
+    <div>
+      <EventComponent onEvent={handleEvent} />
+    </div>
+  );
+};
+```
+
+In this example, the EventComponent fires a click event when the button is clicked. The handleEvent function in the ParentComponent acts as the handler for the event. When the event is triggered, it is passed to the handleEvent function, which determines whether to handle the event or delegate it to a higher-level component.
+
+#### 3. Logging and Error Handling:
+
+Logging errors or events in an application, where different handlers are responsible for logging different types of errors or events based on their severity or category.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface LogMessage {
+  level: string;
+  message: string;
+}
+
+interface LogHandler {
+  setNextHandler(handler: LogHandler): void;
+  handleLog(logMessage: LogMessage): void;
+}
+
+class ErrorLogHandler implements LogHandler {
+  private nextHandler: LogHandler | null = null;
+
+  setNextHandler(handler: LogHandler): void {
+    this.nextHandler = handler;
+  }
+
+  handleLog(logMessage: LogMessage): void {
+    if (logMessage.level === "error") {
+      console.error(logMessage.message);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleLog(logMessage);
+    }
+  }
+}
+
+class InfoLogHandler implements LogHandler {
+  private nextHandler: LogHandler | null = null;
+
+  setNextHandler(handler: LogHandler): void {
+    this.nextHandler = handler;
+  }
+
+  handleLog(logMessage: LogMessage): void {
+    if (logMessage.level === "info") {
+      console.log(logMessage.message);
+    } else if (this.nextHandler) {
+      this.nextHandler.handleLog(logMessage);
+    }
+  }
+}
+
+const App: React.FC = () => {
+  const errorLogHandler = new ErrorLogHandler();
+  const infoLogHandler = new InfoLogHandler();
+
+  errorLogHandler.setNextHandler(infoLogHandler);
+
+  const logMessage: LogMessage = {
+    level: "error",
+    message: "An error occurred!",
+  };
+
+  errorLogHandler.handleLog(logMessage);
+
+  return <div>App component</div>;
+};
+```
+
+In this example, we have two log handlers: ErrorLogHandler and InfoLogHandler. The errorLogHandler is set as the first handler in the chain, and the infoLogHandler is set as the next handler. The handleLog functions of each handler determine whether to log the message based on the log message's level. If the log message level matches the handler's responsibility, it is logged. Otherwise, the message is passed to the next handler in the chain.
+
+#### 4. Input validation:
+
+Validating user input in a form, where each validator in the chain checks a specific aspect of the input (e.g., length, format) and passes it to the next validator in the chain.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface ValidationRule {
+  validate(value: string): boolean;
+}
+
+class LengthValidationRule implements ValidationRule {
+  validate(value: string): boolean {
+    return value.length >= 5;
+  }
+}
+
+class FormatValidationRule implements ValidationRule {
+  validate(value: string): boolean {
+    const regex = /^[a-zA-Z0-9]+$/;
+    return regex.test(value);
+  }
+}
+
+interface InputProps {
+  onValidInput: () => void;
+}
+
+const InputComponent: React.FC<InputProps> = ({ onValidInput }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const validateInput = () => {
+    const lengthValidationRule = new LengthValidationRule();
+    const formatValidationRule = new FormatValidationRule();
+
+    lengthValidationRule.setNextRule(formatValidationRule);
+
+    if (lengthValidationRule.validate(inputValue)) {
+      onValidInput();
+    }
+  };
+
+  return (
+    <div>
+      <input type='text' value={inputValue} onChange={handleInputChange} />
+      <button onClick={validateInput}>Submit</button>
+    </div>
+  );
+};
+```
+
+In this example, we have two validation rules: LengthValidationRule and FormatValidationRule. The InputComponent handles user input and validates it using these rules. The lengthValidationRule is set as the first rule in the chain, and the formatValidationRule is set as the next rule. If the input passes all the validation rules, the onValidInput function is called.
+
+### Advantages
+
+- Promotes loose coupling between senders and receivers of requests.
+- Provides flexibility in dynamically configuring the chain and adding or removing handlers.
+- Allows foradding or modifying the behavior of the chain without affecting the client code.
+- Enables the handling of requests based on their type, category, or other criteria.
+
+### Disadvantages
+
+- Requests may go unhandled if there is no appropriate handler in the chain.
+- Debugging and tracing the flow of requests through the chain can be challenging.
+- Overuse of the pattern can lead to an overly complex chain with redundant or overlapping responsibilities.
