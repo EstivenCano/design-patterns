@@ -1,0 +1,449 @@
+---
+title: Command pattern
+description: Definition and example about the Command pattern applied to the frontend
+tags:
+  - command-pattern_1
+  - use-cases_2
+  - 1-request-handling_6
+  - 2-event-propagation_6
+  - 3-logging-and-error-handling_6
+  - 4-input-validation_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Command Pattern
+
+The Command pattern is a behavioral design pattern that encapsulates a request as an object, thereby decoupling the sender of the request from the object that executes it. It allows you to encapsulate a specific operation or action as a command object, which can be invoked at a later time. The Command pattern provides flexibility in managing requests, undo/redo functionality, queueing requests, or implementing complex transactional systems.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Command {
+  execute(): void;
+}
+
+class Light {
+  on(): void {
+    console.log("Light turned on");
+  }
+
+  off(): void {
+    console.log("Light turned off");
+  }
+}
+
+class LightOnCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  execute(): void {
+    this.light.on();
+  }
+}
+
+class LightOffCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  execute(): void {
+    this.light.off();
+  }
+}
+
+const RemoteControl: React.FC<{ command: Command }> = ({ command }) => {
+  const handleClick = () => {
+    command.execute();
+  };
+
+  return <button onClick={handleClick}>Execute Command</button>;
+};
+
+const App: React.FC = () => {
+  const light = new Light();
+  const lightOnCommand = new LightOnCommand(light);
+  const lightOffCommand = new LightOffCommand(light);
+
+  return (
+    <div>
+      <RemoteControl command={lightOnCommand} />
+      <RemoteControl command={lightOffCommand} />
+    </div>
+  );
+};
+```
+
+In this example, we have a Light class that represents a light bulb and has on() and off() methods. The LightOnCommand and LightOffCommand classes implement the Command interface and encapsulate the respective operations. The RemoteControl component receives a command as a prop and executes it when the button is clicked.
+
+### Use cases
+
+By applying the Command pattern in React, TypeScript, and functional components, you can create a flexible and extensible system for managing requests, implementing undo/redo functionality, remote control systems, batch processing, or complex transactional systems. It promotes decoupling between the sender and receiver of requests, encapsulates commands as objects, and provides a structure for executing and managing commands. This pattern enables you to build applications that are more modular, maintainable, and extensible.
+
+The Command pattern is particularly useful in scenarios as:
+
+#### 1. Undo/Redo Functionality:
+
+Implementing undo/redo functionality in an application, where each command represents an action that can be reversed or reapplied.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Command {
+  execute(): void;
+  undo(): void;
+}
+
+interface TextEditorProps {
+  commands: Command[];
+}
+
+const TextEditor: React.FC<TextEditorProps> = ({ commands }) => {
+  const [text, setText] = useState("");
+
+  const executeCommand = (command: Command) => {
+    command.execute();
+    commands.push(command);
+  };
+
+  const undoLastCommand = () => {
+    const lastCommand = commands.pop();
+    if (lastCommand) {
+      lastCommand.undo();
+    }
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
+  };
+
+  return (
+    <div>
+      <input type='text' value={text} onChange={handleInputChange} />
+      <button onClick={() => executeCommand(new SetTextCommand(text))}>
+        Set Text
+      </button>
+      <button onClick={undoLastCommand}>Undo</button>
+    </div>
+  );
+};
+
+class SetTextCommand implements Command {
+  private previousText: string;
+  private newText: string;
+
+  constructor(newText: string) {
+    this.previousText = "";
+    this.newText = newText;
+  }
+
+  execute(): void {
+    this.previousText = getText();
+    setText(this.newText);
+  }
+
+  undo(): void {
+    setText(this.previousText);
+  }
+}
+
+// Usage in App component
+const App: React.FC = () => {
+  const commandHistory: Command[] = [];
+
+  return (
+    <div>
+      <TextEditor commands={commandHistory} />
+    </div>
+  );
+};
+```
+
+In this example, we have a TextEditor component that allows the user to set the text and undo the last command. The SetTextCommand class implements the Command interface and is responsible for setting the text and storing the previous text value. The TextEditor component maintains a history of commands and executes or undoes them accordingly.
+
+#### 2. Remote Control
+
+Building a remote control interface that sends commands to control different devices or systems, such as turning on/off lights, adjusting the temperature, or changing TV channels.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Command {
+  execute(): void;
+}
+
+class Light {
+  on(): void {
+    console.log("Light turned on");
+  }
+
+  off(): void {
+    console.log("Light turned off");
+  }
+}
+
+class LightOnCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  execute(): void {
+    this.light.on();
+  }
+}
+
+class LightOffCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  execute(): void {
+    this.light.off();
+  }
+}
+
+class RemoteControlButton extends React.Component<{ command: Command }> {
+  handleClick = () => {
+    this.props.command.execute();
+  };
+
+  render() {
+    return <button onClick={this.handleClick}>Press Button</button>;
+  }
+}
+
+// Usage in App component
+const App: React.FC = () => {
+  const light = new Light();
+  const lightOnCommand = new LightOnCommand(light);
+  const lightOffCommand = new LightOffCommand(light);
+
+  return (
+    <div>
+      <RemoteControlButton command={lightOnCommand} />
+      <RemoteControlButton command={lightOffCommand} />
+    </div>
+  );
+};
+```
+
+In this example, we have a Light class representing a light bulb and two command classes, LightOnCommand and LightOffCommand, implementing the Command interface. The RemoteControlButton component represents a button on a remote control that executes the associated command when clicked.
+
+#### 3. Batch Processing:
+
+Executing a batch of commands or actions in a specific order or sequence, such as in an image processing application that applies filters and transformations.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Command {
+  execute(): void;
+}
+
+class ImageProcessor {
+  applyFilter(filterName: string): void {
+    console.log(`Applying ${filterName} filter`);
+  }
+
+  resizeImage(width: number, height: number): void {
+    console.log(`Resizing image to ${width}x${height}`);
+  }
+}
+
+class ImageProcessingCommand implements Command {
+  private imageProcessor: ImageProcessor;
+  private action: () => void;
+
+  constructor(imageProcessor: ImageProcessor, action: () => void) {
+    this.imageProcessor = imageProcessor;
+    this.action = action;
+  }
+
+  execute(): void {
+    this.action();
+  }
+}
+
+const App: React.FC = () => {
+  const imageProcessor = new ImageProcessor();
+
+  const processBatch = () => {
+    const commands: Command[] = [
+      new ImageProcessingCommand(imageProcessor, () =>
+        imageProcessor.applyFilter("Sepia")
+      ),
+      new ImageProcessingCommand(imageProcessor, () =>
+        imageProcessor.resizeImage(800, 600)
+      ),
+    ];
+
+    commands.forEach((command) => command.execute());
+  };
+
+  return (
+    <div>
+      <button onClick={processBatch}>Process Batch</button>
+    </div>
+  );
+};
+```
+
+In this example, we have an ImageProcessor class responsible for applying filters and resizing images. The ImageProcessingCommand class encapsulates specific image processing actions as commands. The App component triggers the execution of a batch of commands, applying a Sepia filter and resizing the image.
+
+#### 4. Transactional Systems:
+
+Implementing complex transactional systems where multiple operations need to be executed together and rolled back if any operation fails.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Command {
+  execute(): void;
+  undo(): void;
+}
+
+interface Transaction {
+  commands: Command[];
+  commit(): void;
+  rollback(): void;
+}
+
+class AddItemCommand implements Command {
+  private item: string;
+  private itemList: string[];
+
+  constructor(item: string, itemList: string[]) {
+    this.item = item;
+    this.itemList = itemList;
+  }
+
+  execute(): void {
+    this.itemList.push(this.item);
+  }
+
+  undo(): void {
+    this.itemList.pop();
+  }
+}
+
+class RemoveItemCommand implements Command {
+  private item: string;
+  private itemList: string[];
+
+  constructor(item: string, itemList: string[]) {
+    this.item = item;
+    this.itemList = itemList;
+  }
+
+  execute(): void {
+    const index = this.itemList.indexOf(this.item);
+    if (index !== -1) {
+      this.itemList.splice(index, 1);
+    }
+  }
+
+  undo(): void {
+    this.itemList.push(this.item);
+  }
+}
+
+const TransactionalComponent: React.FC = () => {
+  const [itemList, setItemList] = useState<string[]>([]);
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
+
+  const addItem = (item: string) => {
+    const command = new AddItemCommand(item, itemList);
+
+    if (transaction) {
+      transaction.commands.push(command);
+    } else {
+      command.execute();
+      setItemList([...itemList]);
+    }
+  };
+
+  const removeItem = (item: string) => {
+    const command = new RemoveItemCommand(item, itemList);
+
+    if (transaction) {
+      transaction.commands.push(command);
+    } else {
+      command.execute();
+      setItemList([...itemList]);
+    }
+  };
+
+  const startTransaction = () => {
+    setTransaction({ commands: [] });
+  };
+
+  const commitTransaction = () => {
+    if (transaction) {
+      transaction.commit();
+      setTransaction(null);
+    }
+  };
+
+  const rollbackTransaction = () => {
+    if (transaction) {
+      transaction.rollback();
+      setTransaction(null);
+    }
+  };
+
+  return (
+    <div>
+      <h3>Item List</h3>
+      <ul>
+        {itemList.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <div>
+        <input
+          type='text'
+          placeholder='Enter item'
+          onChange={(e) => addItem(e.target.value)}
+        />
+        <button onClick={startTransaction}>Start Transaction</button>
+        <button onClick={commitTransaction}>Commit Transaction</button>
+        <button onClick={rollbackTransaction}>Rollback Transaction</button>
+      </div>
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <div>
+      <TransactionalComponent />
+    </div>
+  );
+};
+```
+
+In this example, we have a TransactionalComponent that manages an item list and provides functionality for adding and removing items within a transactional system. The AddItemCommand and RemoveItemCommand classes implement the Command interface to encapsulate the corresponding operations. The Transaction interface represents a transaction, which consists of a collection of commands. When a transaction is started, subsequent commands are added to the transaction until it is committed or rolled back.
+
+### Advantages
+
+- Promotes loose coupling between senders and receivers of requests.
+- Provides flexibility in dynamically configuring the chain and adding or removing handlers.
+- Allows foradding or modifying the behavior of the chain without affecting the client code.
+- Enables the handling of requests based on their type, category, or other criteria.
+
+### Disadvantages
+
+- Requests may go unhandled if there is no appropriate handler in the chain.
+- Debugging and tracing the flow of requests through the chain can be challenging.
+- Overuse of the pattern can lead to an overly complex chain with redundant or overlapping responsibilities.
