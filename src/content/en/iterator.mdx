@@ -1,0 +1,318 @@
+---
+title: Iterator pattern
+description: Definition and example about the Iterator pattern applied to the frontend
+tags:
+  - iterator-pattern_1
+  - use-cases_2
+  - 1-iterating-over-collections_6
+  - 2-custom-iterators_6
+  - 3-lazy-evaluation_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Iterator Pattern
+
+The Iterator pattern is a behavioral design pattern that provides a way to access elements of an aggregate object sequentially without exposing its underlying structure. It decouples the iteration logic from the underlying collection, making it easier to iterate over different types of collections and providing a standardized way to access elements.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Iterator<T> {
+  hasNext(): boolean;
+  next(): T;
+}
+
+interface IterableCollection<T> {
+  createIterator(): Iterator<T>;
+}
+
+class ArrayIterator<T> implements Iterator<T> {
+  private collection: T[];
+  private currentIndex: number;
+
+  constructor(collection: T[]) {
+    this.collection = collection;
+    this.currentIndex = 0;
+  }
+
+  hasNext(): boolean {
+    return this.currentIndex < this.collection.length;
+  }
+
+  next(): T {
+    const item = this.collection[this.currentIndex];
+    this.currentIndex++;
+    return item;
+  }
+}
+
+class ArrayCollection<T> implements IterableCollection<T> {
+  private collection: T[];
+
+  constructor(collection: T[]) {
+    this.collection = collection;
+  }
+
+  createIterator(): Iterator<T> {
+    return new ArrayIterator<T>(this.collection);
+  }
+}
+
+const IteratorExample: React.FC = () => {
+  const items = ["Apple", "Banana", "Cherry"];
+  const collection = new ArrayCollection<string>(items);
+  const iterator = collection.createIterator();
+
+  const renderItems = () => {
+    const renderedItems: JSX.Element[] = [];
+    while (iterator.hasNext()) {
+      const item = iterator.next();
+      renderedItems.push(<li key={item}>{item}</li>);
+    }
+    return renderedItems;
+  };
+
+  return (
+    <div>
+      <ul>{renderItems()}</ul>
+    </div>
+  );
+};
+
+export default IteratorExample;
+```
+
+In this example, we have an ArrayCollection class representing a collection of items and an ArrayIterator class implementing the Iterator interface to iterate over the collection. The IteratorExample component creates an instance of ArrayCollection and obtains an iterator from it. It then iterates over the collection and renders each item as a list element.
+
+### Use cases
+
+By applying the Iterator pattern you can iterate over collections of items in a standardized and decoupled manner. It promotes flexibility, reusability, and encapsulation of iteration logic, making it easier to work with various types of collections and perform operations on their elements.
+
+The Iterator pattern is particularly useful in scenarios as:
+
+#### 1. Iterating over Collections:
+
+Iterating over an array, list, or set of items, performing an operation on each item.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Iterator<T> {
+  hasNext(): boolean;
+  next(): T;
+}
+
+interface IterableCollection<T> {
+  createIterator(): Iterator<T>;
+}
+
+class ArrayIterator<T> implements Iterator<T> {
+  private collection: T[];
+  private currentIndex: number;
+
+  constructor(collection: T[]) {
+    this.collection = collection;
+    this.currentIndex = 0;
+  }
+
+  hasNext(): boolean {
+    return this.currentIndex < this.collection.length;
+  }
+
+  next(): T {
+    const item = this.collection[this.currentIndex];
+    this.currentIndex++;
+    return item;
+  }
+}
+
+class ArrayCollection<T> implements IterableCollection<T> {
+  private collection: T[];
+
+  constructor(collection: T[]) {
+    this.collection = collection;
+  }
+
+  createIterator(): Iterator<T> {
+    return new ArrayIterator<T>(this.collection);
+  }
+}
+
+const CollectionExample: React.FC = () => {
+  const items = ["Apple", "Banana", "Cherry"];
+  const collection = new ArrayCollection<string>(items);
+  const iterator = collection.createIterator();
+
+  const renderItems = () => {
+    const renderedItems: JSX.Element[] = [];
+    while (iterator.hasNext()) {
+      const item = iterator.next();
+      renderedItems.push(<li key={item}>{item}</li>);
+    }
+    return renderedItems;
+  };
+
+  return (
+    <div>
+      <ul>{renderItems()}</ul>
+    </div>
+  );
+};
+```
+
+In this example, we have an ArrayCollection class representing a collection of items and an ArrayIterator class implementing the Iterator interface to iterate over the collection. The CollectionExample component creates an instance of ArrayCollection and obtains an iterator from it. It then iterates over the collection and renders each item as a list element.
+
+#### 2. Custom Iterators:
+
+Creating custom iterators for complex data structures, such as trees or graphs, to traverse and process their elements.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Iterator<T> {
+  hasNext(): boolean;
+  next(): T;
+}
+
+interface Node {
+  value: string;
+  children: Node[];
+}
+
+class TreeIterator implements Iterator<Node> {
+  private root: Node | null;
+  private stack: Node[];
+
+  constructor(root: Node | null) {
+    this.root = root;
+    this.stack = [];
+    if (this.root) {
+      this.stack.push(this.root);
+    }
+  }
+
+  hasNext(): boolean {
+    return this.stack.length > 0;
+  }
+
+  next(): Node {
+    if (!this.hasNext()) {
+      throw new Error("No more elements in the tree");
+    }
+
+    const node = this.stack.pop()!;
+    if (node.children.length > 0) {
+      this.stack.push(...node.children);
+    }
+    return node;
+  }
+}
+
+const TreeTraversalExample: React.FC = () => {
+  const rootNode: Node = {
+    value: "Root",
+    children: [
+      {
+        value: "Node 1",
+        children: [
+          { value: "Node 1.1", children: [] },
+          { value: "Node 1.2", children: [] },
+        ],
+      },
+      {
+        value: "Node 2",
+        children: [
+          { value: "Node 2.1", children: [] },
+          { value: "Node 2.2", children: [] },
+        ],
+      },
+    ],
+  };
+
+  const treeIterator = new TreeIterator(rootNode);
+
+  const renderNodes = () => {
+    const renderedNodes: JSX.Element[] = [];
+    while (treeIterator.hasNext()) {
+      const node = treeIterator.next();
+      renderedNodes.push(<li key={node.value}>{node.value}</li>);
+    }
+    return renderedNodes;
+  };
+
+  return (
+    <div>
+      <ul>{renderNodes()}</ul>
+    </div>
+  );
+};
+```
+
+In this example, we have a Node interface representing a node in a tree data structure and a TreeIterator class implementing the Iterator interface to traverse the tree. The TreeTraversalExample component creates a sample tree structure and uses the TreeIterator to iterate over the nodes and render them as a list.
+
+#### 3. Lazy Evaluation:
+
+Implementing lazy evaluation or on-demand data loading, where elements are fetched only when requested by the iterator.
+
+```tsx showLineNumbers
+import React, { useEffect, useState } from "react";
+
+interface Iterator<T> {
+  hasNext(): boolean;
+  next(): T;
+}
+
+const LazyList: React.FC = () => {
+  const [data, setData] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setLoading(true);
+    // Simulating an asynchronous data fetch
+    setTimeout(() => {
+      const newData = ["Apple", "Banana", "Cherry"];
+      setData(newData);
+      setLoading(false);
+    }, 2000);
+  }, []);
+
+  const renderList = () => {
+    const iterator: Iterator<string> = {
+      hasNext: () => data.length > 0,
+      next: () => data.shift()!,
+    };
+
+    const renderedItems: JSX.Element[] = [];
+    while (iterator.hasNext()) {
+      const item = iterator.next();
+      renderedItems.push(<li key={item}>{item}</li>);
+    }
+    return renderedItems;
+  };
+
+  return (
+    <div>
+      <h3>Lazy Loaded List</h3>
+      {loading ? <p>Loading...</p> : <ul>{renderList()}</ul>}
+    </div>
+  );
+};
+```
+
+In this example, we have a LazyList component that simulates lazy evaluation by asynchronously fetching data and rendering it on demand. The renderList function creates an iterator with custom hasNext and next functions that lazily load and iterate over the data as it becomes available.
+
+### Advantages
+
+- Decouples the iteration logic from the underlying collection, providing a standardized way to access elements.
+- Supports iteration over different types of collections without exposing their internal structure.
+- Allows for the implementation of custom iterators for complex data structures.
+- Facilitates lazy evaluation or on-demand data loading by fetching elements only when requested.
+
+### Disadvantages
+
+- Adds an additional layer of abstraction, which can increase complexity in simple scenarios.
+- Requires implementing custom iterator classes for each type of collection.
+- The iterator may become invalid if the underlying collection changes during iteration.
