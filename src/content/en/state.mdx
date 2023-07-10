@@ -1,0 +1,264 @@
+---
+title: State pattern
+description: Definition and example about the State pattern applied to the frontend
+tags:
+  - state-pattern_1
+  - use-cases_2
+  - 1-stateful-components_6
+  - 2-workflow-management_6
+  - 3-game-development_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# State Pattern
+
+The State pattern is a behavioral design pattern that allows an object to alter its behavior when its internal state changes. It enables an object to appear as if it has changed its class, allowing for dynamic changes in behavior at runtime. This pattern promotes encapsulation and flexibility by separating the behavior into distinct state objects.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface State {
+  doAction: () => void;
+}
+
+class Context {
+  private state: State;
+
+  constructor(state: State) {
+    this.state = state;
+  }
+
+  setState(state: State): void {
+    this.state = state;
+  }
+
+  doAction(): void {
+    this.state.doAction();
+  }
+}
+
+class StateA implements State {
+  doAction(): void {
+    console.log("Performing action in State A");
+  }
+}
+
+class StateB implements State {
+  doAction(): void {
+    console.log("Performing action in State B");
+  }
+}
+
+const StateExample: React.FC = () => {
+  const [currentState, setCurrentState] = useState<State>(new StateA());
+
+  const handleStateChange = () => {
+    if (currentState instanceof StateA) {
+      setCurrentState(new StateB());
+    } else {
+      setCurrentState(new StateA());
+    }
+  };
+
+  const handleAction = () => {
+    currentState.doAction();
+  };
+
+  return (
+    <div>
+      <h4>State Example</h4>
+      <button onClick={handleStateChange}>Change State</button>
+      <button onClick={handleAction}>Do Action</button>
+    </div>
+  );
+};
+
+export default StateExample;
+```
+
+In this example, we have a simplified scenario with a StateExample component. The component demonstrates the State pattern by allowing the user to switch between two states, State A and State B, and perform an action based on the current state. The Context class manages the current state and delegates the action to the appropriate state object.
+
+### Use cases
+
+By applying the State pattern in React, TypeScript, and functional components, you can create flexible and modular components that can change their behavior dynamically based on their internal state. It allows you to encapsulate and manage different states and their associated behaviors in a structured manner. The State pattern enhances code maintainability and extensibility, enabling you to add or modify states independently without affecting the overall system.
+
+The State pattern is particularly useful in scenarios as:
+
+#### 1. Stateful Components:
+
+Implementing a component with different states and behaviors based on its internal state.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface State {
+  render: () => JSX.Element;
+}
+
+const StatefulComponent: React.FC = () => {
+  const [currentState, setCurrentState] = useState<State>(() => initialState);
+
+  const switchState = () => {
+    setCurrentState((prevState) => (prevState === stateA ? stateB : stateA));
+  };
+
+  return (
+    <div>
+      <h4>Stateful Component</h4>
+      <button onClick={switchState}>Switch State</button>
+      {currentState.render()}
+    </div>
+  );
+};
+
+const stateA: State = {
+  render: () => <p>State A</p>,
+};
+
+const stateB: State = {
+  render: () => <p>State B</p>,
+};
+
+export default StatefulComponent;
+```
+
+In this example, we have a StatefulComponent that maintains an internal state using the useState hook. The component renders different content based on its current state, which is managed by currentState and updated using setCurrentState. The stateA and stateB objects represent the different states and their corresponding render functions.
+
+#### 2. Workflow Management:
+
+Managing the flow and transitions between different states in a process or workflow.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface State {
+  title: string;
+  description: string;
+  onEnter: () => void;
+  onExit: () => void;
+}
+
+const WorkflowManager: React.FC = () => {
+  const [currentState, setCurrentState] = useState<State>(
+    () => initialWorkflowState
+  );
+
+  const moveToNextState = () => {
+    currentState.onExit();
+    setCurrentState((prevState) => (prevState === stateA ? stateB : stateA));
+  };
+
+  React.useEffect(() => {
+    currentState.onEnter();
+  }, [currentState]);
+
+  return (
+    <div>
+      <h4>Workflow Manager</h4>
+      <p>Title: {currentState.title}</p>
+      <p>Description: {currentState.description}</p>
+      <button onClick={moveToNextState}>Next State</button>
+    </div>
+  );
+};
+
+const stateA: State = {
+  title: "State A",
+  description: "This is state A",
+  onEnter: () => {
+    console.log("Entered State A");
+  },
+  onExit: () => {
+    console.log("Exited State A");
+  },
+};
+
+const stateB: State = {
+  title: "State B",
+  description: "This is state B",
+  onEnter: () => {
+    console.log("Entered State B");
+  },
+  onExit: () => {
+    console.log("Exited State B");
+  },
+};
+
+const initialWorkflowState: State = stateA;
+
+export default WorkflowManager;
+```
+
+In this example, we have a WorkflowManager component that manages a workflow with two states: stateA and stateB. The current state is stored in currentState and is updated using the setCurrentState function. Each state object defines a title, description, and callbacks for the onEnter and onExit events. The component renders the current state's title and description and provides a button to transition to the next state.
+
+#### 3. Game Development:
+
+Implementing game characters with different behaviors based on their current state (e.g., idle, attacking, defending).
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface State {
+  performAction: () => void;
+}
+
+const GameCharacter: React.FC = () => {
+  const [currentState, setCurrentState] = useState<State>(() => idleState);
+
+  const startAttack = () => {
+    setCurrentState(attackState);
+  };
+
+  const startDefend = () => {
+    setCurrentState(defendState);
+  };
+
+  const startIdle = () => {
+    setCurrentState(idleState);
+  };
+
+  return (
+    <div>
+      <h4>Game Character</h4>
+      <button onClick={startAttack}>Start Attack</button>
+      <button onClick={startDefend}>Start Defend</button>
+      <button onClick={startIdle}>Start Idle</button>
+      <br />
+      <br />
+      <p>Current State: {currentState.constructor.name}</p>
+      <p>Performing Action: {currentState.performAction()}</p>
+    </div>
+  );
+};
+
+const idleState: State = {
+  performAction: () => "No action performed (Idle state)",
+};
+
+const attackState: State = {
+  performAction: () => "Performing attack action",
+};
+
+const defendState: State = {
+  performAction: () => "Performing defend action",
+};
+
+export default GameCharacter;
+```
+
+In this example, we have a GameCharacter component that represents a game character with different states. The current state is stored in currentState and is updated based on the user's actions (e.g., clicking buttons). Each state object defines a performAction function that describes the behavior for that state. The component renders buttons to trigger different states and displays the current state and the action being performed.In this example, we have a GameCharacter component that represents a game character with different states. The current state is stored in currentState and is updated based on the user's actions (e.g., clicking buttons). Each state object defines a performAction function that describes the behavior for that state. The component renders buttons to trigger different states and displays the current state and the action being performed.
+
+### Advantages
+
+- Encapsulates behavior into separate state objects, promoting modularity and code organization.
+- Simplifies the addition of new states, as they can be added independently without modifying existing code.
+- Improves code readability and maintainability by separating state-specific logic.
+
+### Disadvantages
+
+- Can result in a proliferation of state classes, especially for complex systems with numerous states.
+- Requires careful management of state transitions and ensuring proper synchronization between the context and state objects.
+- May introduce overhead and complexity if not used judiciously for cases where state transitions are infrequent or straightforward.
