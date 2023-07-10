@@ -1,0 +1,385 @@
+---
+title: Observer pattern
+description: Definition and example about the Observer pattern applied to the frontend
+tags:
+  - observer-pattern_1
+  - use-cases_2
+  - 1-event-handling_6
+  - 2-state-management_6
+  - 3-publish--subscribe-model_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Observer Pattern
+
+The Observer pattern is a behavioral design pattern that establishes a one-to-many relationship between objects. It defines a mechanism where multiple observers (subscribers) are notified and updated automatically when the observed object (subject) undergoes a change in its state. This pattern promotes loose coupling between the subject and observers, allowing for a flexible and decoupled system design.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Observer {
+  update: (data: any) => void;
+}
+
+interface Subject {
+  attach(observer: Observer): void;
+  detach(observer: Observer): void;
+  notify(data: any): void;
+}
+
+const NewsSubject: Subject = {
+  observers: new Set<Observer>(),
+
+  attach(observer: Observer): void {
+    this.observers.add(observer);
+  },
+
+  detach(observer: Observer): void {
+    this.observers.delete(observer);
+  },
+
+  notify(data: any): void {
+    this.observers.forEach((observer) => observer.update(data));
+  },
+};
+
+const NewsSubscriber: React.FC = () => {
+  const [news, setNews] = useState("");
+
+  const update = (data: any) => {
+    setNews(data);
+  };
+
+  React.useEffect(() => {
+    NewsSubject.attach({ update });
+    return () => {
+      NewsSubject.detach({ update });
+    };
+  }, []);
+
+  return (
+    <div>
+      <h4>News Subscriber</h4>
+      <p>{news}</p>
+    </div>
+  );
+};
+
+const NewsPublisher: React.FC = () => {
+  const [news, setNews] = useState("");
+
+  const publishNews = () => {
+    NewsSubject.notify(news);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNews(e.target.value);
+  };
+
+  return (
+    <div>
+      <h4>News Publisher</h4>
+      <input type='text' value={news} onChange={handleChange} />
+      <button onClick={publishNews}>Publish</button>
+    </div>
+  );
+};
+
+const ObserverExample: React.FC = () => {
+  return (
+    <div>
+      <NewsSubscriber />
+      <NewsPublisher />
+    </div>
+  );
+};
+
+export default ObserverExample;
+```
+
+In this example, we have a simplified scenario with a NewsSubscriber component and a NewsPublisher component. The NewsSubscriber component subscribes to the NewsSubject and updates its UI when notified. The NewsPublisher component allows the user to enter news and publish it, triggering the NewsSubject to notify the subscribers.
+
+### Use cases
+
+By applying the Observer pattern in React, TypeScript, and functional components, you can establish a flexible and decoupled communication mechanism between components. It allows you to implement event handling, state management, and a publish/subscribe model, providing a way for components to observe and react to changes in the system. The Observer pattern promotes modularity and reusability, making it easier to maintain and extend your applications.
+
+The Observer pattern is particularly useful in scenarios as:
+
+#### 1. Event Handling:
+
+Managing event subscriptions and notifying subscribers when specific events occur.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Observer {
+  update: (event: string, data?: any) => void;
+}
+
+interface Subject {
+  subscribe(event: string, observer: Observer): void;
+  unsubscribe(event: string, observer: Observer): void;
+  notify(event: string, data?: any): void;
+}
+
+const EventSubject: Subject = {
+  subscribers: new Map<string, Set<Observer>>(),
+
+  subscribe(event: string, observer: Observer): void {
+    if (!this.subscribers.has(event)) {
+      this.subscribers.set(event, new Set());
+    }
+    this.subscribers.get(event)!.add(observer);
+  },
+
+  unsubscribe(event: string, observer: Observer): void {
+    if (this.subscribers.has(event)) {
+      this.subscribers.get(event)!.delete(observer);
+    }
+  },
+
+  notify(event: string, data?: any): void {
+    if (this.subscribers.has(event)) {
+      this.subscribers
+        .get(event)!
+        .forEach((observer) => observer.update(event, data));
+    }
+  },
+};
+
+const EventPublisher: React.FC = () => {
+  const handleClick = () => {
+    EventSubject.notify("buttonClick", "Button clicked!");
+  };
+
+  return (
+    <div>
+      <h4>Event Publisher</h4>
+      <button onClick={handleClick}>Click Me</button>
+    </div>
+  );
+};
+
+const EventSubscriber: React.FC = () => {
+  const [message, setMessage] = React.useState("");
+
+  const handleEvent = (event: string, data?: any) => {
+    setMessage(data);
+  };
+
+  React.useEffect(() => {
+    EventSubject.subscribe("buttonClick", { update: handleEvent });
+    return () => {
+      EventSubject.unsubscribe("buttonClick", { update: handleEvent });
+    };
+  }, []);
+
+  return (
+    <div>
+      <h4>Event Subscriber</h4>
+      <p>{message}</p>
+    </div>
+  );
+};
+
+const ObserverExample: React.FC = () => {
+  return (
+    <div>
+      <EventPublisher />
+      <EventSubscriber />
+    </div>
+  );
+};
+
+export default ObserverExample;
+```
+
+In this example, we have an EventPublisher component that triggers an event when a button is clicked. The EventSubscriber component subscribes to the event and displays a message when the event is triggered. The EventSubject maintains a map of subscribers for different events and notifies the subscribers when an event occurs.
+
+#### 2. State Management:
+
+Updating UI components when the state of a shared data source changes.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Observer {
+  update: (state: CounterState) => void;
+}
+
+interface Subject {
+  attach(observer: Observer): void;
+  detach(observer: Observer): void;
+  setState(state: CounterState): void;
+}
+
+interface CounterState {
+  count: number;
+}
+
+const CounterSubject: Subject = {
+  observers: new Set<Observer>(),
+
+  attach(observer: Observer): void {
+    this.observers.add(observer);
+  },
+
+  detach(observer: Observer): void {
+    this.observers.delete(observer);
+  },
+
+  setState(state: CounterState): void {
+    this.observers.forEach((observer) => observer.update(state));
+  },
+};
+
+const Counter: React.FC = () => {
+  const [count, setCount] = React.useState(0);
+
+  const handleIncrement = () => {
+    setCount((prevCount) => prevCount + 1);
+    CounterSubject.setState({ count: count + 1 });
+  };
+
+  return (
+    <div>
+      <h4>Counter</h4>
+      <p>Count: {count}</p>
+      <button onClick={handleIncrement}>Increment</button>
+    </div>
+  );
+};
+
+const CounterDisplay: React.FC = () => {
+  const [count, setCount] = React.useState(0);
+
+  const handleUpdate = (state: CounterState) => {
+    setCount(state.count);
+  };
+
+  React.useEffect(() => {
+    CounterSubject.attach({ update: handleUpdate });
+    return () => {
+      CounterSubject.detach({ update: handleUpdate });
+    };
+  }, []);
+
+  return (
+    <div>
+      <h4>Counter Display</h4>
+      <p>Count: {count}</p>
+    </div>
+  );
+};
+
+const ObserverExample: React.FC = () => {
+  return (
+    <div>
+      <Counter />
+      <CounterDisplay />
+    </div>
+  );
+};
+
+export default ObserverExample;
+```
+
+In this example, we have a Counter component that manages a count state. The CounterDisplay component displays the current count received from the CounterSubject. When the count is incremented in the Counter component, the CounterSubject updates its state and notifies the CounterDisplay component to update.
+
+#### 3. Publish / Subscribe Model:
+
+Implementing a message bus or event-driven architecture, where components can publish events and others can subscribe to receive updates.
+
+```tsx showLineNumbers
+import React from "react";
+
+interface Observer {
+  update: (message: string) => void;
+}
+
+interface Subject {
+  subscribe(observer: Observer): void;
+  unsubscribe(observer: Observer): void;
+  publish(message: string): void;
+}
+
+const MessageBus: Subject = {
+  subscribers: new Set<Observer>(),
+
+  subscribe(observer: Observer): void {
+    this.subscribers.add(observer);
+  },
+
+  unsubscribe(observer: Observer): void {
+    this.subscribers.delete(observer);
+  },
+
+  publish(message: string): void {
+    this.subscribers.forEach((observer) => observer.update(message));
+  },
+};
+
+const Publisher: React.FC = () => {
+  const handleClick = () => {
+    MessageBus.publish("Hello from Publisher");
+  };
+
+  return (
+    <div>
+      <h4>Publisher</h4>
+      <button onClick={handleClick}>Publish Message</button>
+    </div>
+  );
+};
+
+const Subscriber: React.FC = () => {
+  const [message, setMessage] = React.useState("");
+
+  const handleUpdate = (message: string) => {
+    setMessage(message);
+  };
+
+  React.useEffect(() => {
+    MessageBus.subscribe({ update: handleUpdate });
+    return () => {
+      MessageBus.unsubscribe({ update: handleUpdate });
+    };
+  }, []);
+
+  return (
+    <div>
+      <h4>Subscriber</h4>
+      <p>{message}</p>
+    </div>
+  );
+};
+
+const ObserverExample: React.FC = () => {
+  return (
+    <div>
+      <Publisher />
+      <Subscriber />
+    </div>
+  );
+};
+
+export default ObserverExample;
+```
+
+In this example, we have a Publisher component that publishes a message when a button is clicked. The Subscriber component subscribes to the MessageBus and displays the received message. When the Publisher publishes a message, the MessageBus notifies all subscribers, including the Subscriber component.
+
+### Advantages
+
+- Enables loose coupling between the subject and observers, promoting flexibility and maintainability.
+- Supports a one-to-many relationship, allowing multiple observers to receive updates from a single subject.
+- Simplifies the addition and removal of observers, as they can dynamically subscribe and unsubscribe.
+- Supports event-driven architectures and decoupled communication between components.
+
+### Disadvantages
+
+- May result in increased complexity if there are a large number of observers or complex notification logic.
+- Care must be taken to manage the lifespan of observers to prevent memory leaks.
+- Can introduce performance overhead if there are frequent state changes and a large number of observers.
