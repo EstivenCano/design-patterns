@@ -1,0 +1,391 @@
+---
+title: Mediator pattern
+description: Definition and example about the Mediator pattern applied to the frontend
+tags:
+  - mediator-pattern_1
+  - use-cases_2
+  - 1-decoupled-communication_6
+  - 2-event-aggregation_6
+  - 3-centralized-control_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Mediator Pattern
+
+The Mediator pattern is a behavioral design pattern that defines an object (the Mediator) that encapsulates the communication and coordination between multiple objects (Colleagues) without them directly referencing each other. It promotes loose coupling and centralizes complex communication logic, making it easier to manage and maintain interactions between objects.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+// Mediator interface
+interface Mediator {
+  notify(sender: Colleague, event: string): void;
+}
+
+// Colleague interface
+interface Colleague {
+  setMediator(mediator: Mediator): void;
+  send(event: string): void;
+  receive(event: string): void;
+}
+
+// Concrete Mediator
+class ChatRoomMediator implements Mediator {
+  private colleagues: Colleague[];
+
+  constructor() {
+    this.colleagues = [];
+  }
+
+  register(colleague: Colleague): void {
+    this.colleagues.push(colleague);
+  }
+
+  notify(sender: Colleague, event: string): void {
+    this.colleagues
+      .filter((colleague) => colleague !== sender)
+      .forEach((colleague) => colleague.receive(event));
+  }
+}
+
+// Concrete Colleague
+class User implements Colleague {
+  private mediator: Mediator | null;
+  private name: string;
+
+  constructor(name: string) {
+    this.name = name;
+    this.mediator = null;
+  }
+
+  setMediator(mediator: Mediator): void {
+    this.mediator = mediator;
+  }
+
+  send(event: string): void {
+    console.log(`${this.name} sends: ${event}`);
+    this.mediator?.notify(this, event);
+  }
+
+  receive(event: string): void {
+    console.log(`${this.name} receives: ${event}`);
+  }
+}
+
+const MediatorExample: React.FC = () => {
+  const [message, setMessage] = useState("");
+  const [chatRoomMediator] = useState(new ChatRoomMediator());
+  const [userA] = useState(new User("User A"));
+  const [userB] = useState(new User("User B"));
+
+  // Set the mediator for each user
+  userA.setMediator(chatRoomMediator);
+  userB.setMediator(chatRoomMediator);
+
+  // Register the users in the chat room mediator
+  chatRoomMediator.register(userA);
+  chatRoomMediator.register(userB);
+
+  const sendMessage = () => {
+    if (message.trim() !== "") {
+      userA.send(message);
+      setMessage("");
+    }
+  };
+
+  return (
+    <div>
+      <h3>Mediator Example</h3>
+      <div>
+        <input
+          type='text'
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
+    </div>
+  );
+};
+
+export default MediatorExample;
+```
+
+In this example, we have a simplified implementation of a Chat Room where multiple users can communicate through a Mediator. The ChatRoomMediator class implements the Mediator interface and manages the communication between users. The User class implements the Colleague interface and interacts with the mediator to send and receive messages.
+
+### Use cases
+
+By applying the Mediator pattern in React, TypeScript, and functional components, you can decouple communication between multiple objects, centralize complex interaction logic, and simplify coordination between components or modules. It promotes loose coupling, enhances maintainability and extensibility, and provides a clear and standardized way to manage interactions within a system.
+
+The Mediator pattern is particularly useful in scenarios as:
+
+#### 1. Decoupled Communication:
+
+Managing communication between multiple components or modules without them having direct knowledge of each other.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Mediator {
+  notify(sender: Colleague, event: string): void;
+}
+
+interface Colleague {
+  setMediator(mediator: Mediator): void;
+  send(event: string): void;
+  receive(event: string): void;
+}
+
+// Concrete Mediator
+class ChatRoomMediator implements Mediator {
+  private colleagues: Colleague[];
+
+  constructor() {
+    this.colleagues = [];
+  }
+
+  register(colleague: Colleague): void {
+    this.colleagues.push(colleague);
+  }
+
+  notify(sender: Colleague, event: string): void {
+    this.colleagues
+      .filter((colleague) => colleague !== sender)
+      .forEach((colleague) => colleague.receive(event));
+  }
+}
+
+// Concrete Colleague
+const UserComponent: React.FC<{ name: string; mediator: Mediator }> = ({
+  name,
+  mediator,
+}) => {
+  const [message, setMessage] = useState("");
+
+  const send = () => {
+    if (message.trim() !== "") {
+      mediator.notify(null!, `${name}: ${message}`);
+      setMessage("");
+    }
+  };
+
+  return (
+    <div>
+      <h4>{name}</h4>
+      <input
+        type='text'
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button onClick={send}>Send</button>
+    </div>
+  );
+};
+
+const MediatorExample: React.FC = () => {
+  const chatRoomMediator = new ChatRoomMediator();
+
+  return (
+    <div>
+      <UserComponent name='User A' mediator={chatRoomMediator} />
+      <UserComponent name='User B' mediator={chatRoomMediator} />
+      <UserComponent name='User C' mediator={chatRoomMediator} />
+    </div>
+  );
+};
+```
+
+In this example, we have a simplified Chat Room where multiple users can send messages without having direct knowledge of each other. The ChatRoomMediator class handles the communication between users by notifying the colleagues (users) about received messages. Each UserComponent represents a user and interacts with the mediator to send and receive messages.
+
+#### 2. Event Aggregation:
+
+Coordinating and handling events between multiple components or modules in a centralized manner.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Mediator {
+  subscribe(event: string, handler: () => void): void;
+  unsubscribe(event: string, handler: () => void): void;
+  publish(event: string): void;
+}
+
+const EventAggregator: Mediator = {
+  subscribers: new Map<string, Set<() => void>>(),
+
+  subscribe(event: string, handler: () => void): void {
+    if (!this.subscribers.has(event)) {
+      this.subscribers.set(event, new Set());
+    }
+    this.subscribers.get(event)!.add(handler);
+  },
+
+  unsubscribe(event: string, handler: () => void): void {
+    const handlers = this.subscribers.get(event);
+    if (handlers) {
+      handlers.delete(handler);
+    }
+  },
+
+  publish(event: string): void {
+    const handlers = this.subscribers.get(event);
+    if (handlers) {
+      handlers.forEach((handler) => handler());
+    }
+  },
+};
+
+const ComponentA: React.FC = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount((prevCount) => prevCount + 1);
+  };
+
+  EventAggregator.subscribe("increment", increment);
+
+  return (
+    <div>
+      <h4>Component A</h4>
+      <p>Count: {count}</p>
+    </div>
+  );
+};
+
+const ComponentB: React.FC = () => {
+  const handleClick = () => {
+    EventAggregator.publish("increment");
+  };
+
+  return (
+    <div>
+      <h4>Component B</h4>
+      <button onClick={handleClick}>Increment Count</button>
+    </div>
+  );
+};
+
+const MediatorExample: React.FC = () => {
+  return (
+    <div>
+      <ComponentA />
+      <ComponentB />
+    </div>
+  );
+};
+```
+
+In this example, we have a simplified scenario where ComponentB triggers an event (increment) using the EventAggregator Mediator. ComponentA subscribes to the event and increments its count when the event is published. This centralizes the handling of events, allowing multiple components to communicate without having direct knowledge of each other.
+
+#### 3. Centralized Control:
+
+Implementing a central authority to control and coordinate the behavior of multiple objects.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Mediator {
+  register(component: Component): void;
+  notify(event: string, data?: any): void;
+}
+
+interface Component {
+  setMediator(mediator: Mediator): void;
+  receive(event: string, data?: any): void;
+}
+
+const FormMediator: Mediator = {
+  components: new Set<Component>(),
+
+  register(component: Component): void {
+    this.components.add(component);
+  },
+
+  notify(event: string, data?: any): void {
+    this.components.forEach((component) => component.receive(event, data));
+  },
+};
+
+const InputComponent: React.FC = () => {
+  const [value, setValue] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    FormMediator.notify("inputChange", e.target.value);
+  };
+
+  return (
+    <div>
+      <input type='text' value={value} onChange={handleChange} />
+    </div>
+  );
+};
+
+const ButtonComponent: React.FC = () => {
+  const handleClick = () => {
+    FormMediator.notify("submitButtonClick");
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>Submit</button>
+    </div>
+  );
+};
+
+const FormComponent: React.FC = () => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+  };
+
+  const handleSubmitButtonClick = () => {
+    alert(`Form submitted with value: ${inputValue}`);
+  };
+
+  FormMediator.register({
+    setMediator: () => {},
+    receive(event: string, data?: any) {
+      if (event === "inputChange") {
+        handleInputChange(data);
+      } else if (event === "submitButtonClick") {
+        handleSubmitButtonClick();
+      }
+    },
+  });
+
+  return (
+    <div>
+      <InputComponent />
+      <ButtonComponent />
+    </div>
+  );
+};
+
+const MediatorExample: React.FC = () => {
+  return (
+    <div>
+      <FormComponent />
+    </div>
+  );
+};
+```
+
+In this example, we have a simplified form where the InputComponent updates its value and notifies the FormMediator whenever there is a change in input. The ButtonComponent triggers the FormMediator when the submit button is clicked. The FormComponent registers with the FormMediator and receives notifications about input changes and button clicks, allowing centralized control and coordination of the form's behavior.
+
+### Advantages
+
+- Decouples objects by removing direct references between them.
+- Simplifies communication and coordination between objects.
+- Centralizes complex interaction logic in a single mediator object.
+- Enhances reusability and modularity by promoting a modular architecture.
+
+### Disadvantages
+
+- Can introduce additional complexity by adding an extra layer of indirection.
+- The mediator can become a centralized and complex object if not properly designed.
+- Requires careful consideration of the design to ensure proper object interaction and responsibilities.
