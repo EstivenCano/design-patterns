@@ -1,0 +1,327 @@
+---
+title: Memento pattern
+description: Definition and example about the Memento pattern applied to the frontend
+tags:
+  - memento-pattern_1
+  - use-cases_2
+  - 1-undo--redo_6
+  - 2-checkpoint--save-points_6
+  - 3-state-management_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Memento Pattern
+
+The Memento pattern is a behavioral design pattern that allows you to capture and restore the internal state of an object without exposing its implementation details. It provides a way to save and restore the state of an object, enabling undo/redo functionality or reverting an object to a previous state.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Memento {
+  getState(): string;
+}
+
+class EditorMemento implements Memento {
+  private state: string;
+
+  constructor(state: string) {
+    this.state = state;
+  }
+
+  getState(): string {
+    return this.state;
+  }
+}
+
+interface Editor {
+  getContent(): string;
+  setContent(content: string): void;
+  save(): Memento;
+  restore(memento: Memento): void;
+}
+
+const TextEditor: React.FC = () => {
+  const [content, setContent] = useState("");
+  const [history, setHistory] = useState<Memento[]>([]);
+
+  const save = () => {
+    const memento: Memento = new EditorMemento(content);
+    setHistory((prevHistory) => [...prevHistory, memento]);
+  };
+
+  const undo = () => {
+    if (history.length > 0) {
+      const previousMemento = history[history.length - 1];
+      setHistory((prevHistory) => prevHistory.slice(0, prevHistory.length - 1));
+      setContent(previousMemento.getState());
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
+
+  return (
+    <div>
+      <textarea value={content} onChange={handleChange}></textarea>
+      <button onClick={save}>Save</button>
+      <button onClick={undo}>Undo</button>
+    </div>
+  );
+};
+
+export default TextEditor;
+```
+
+In this example, we have a simple TextEditor component that demonstrates the Memento pattern. The TextEditor component allows users to type and edit text in a textarea. It provides a "Save" button to capture the current content state as a memento, and an "Undo" button to restore the previous content state from the history of mementos.
+
+### Use cases
+
+By applying the Memento pattern in React, TypeScript, and functional components, you can easily implement features such as undo/redo functionality, checkpointing, and state management. It provides a convenient way to capture and restore object states, enabling users to navigate and revert to previous states in an application.
+
+The Memento pattern is particularly useful in scenarios as:
+
+#### 1. Undo / Redo:
+
+Allowing users to undo and redo actions in an application, restoring objects to previous states.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Memento {
+  getState(): string;
+}
+
+class EditorMemento implements Memento {
+  private state: string;
+
+  constructor(state: string) {
+    this.state = state;
+  }
+
+  getState(): string {
+    return this.state;
+  }
+}
+
+interface Editor {
+  getContent(): string;
+  setContent(content: string): void;
+  save(): Memento;
+  restore(memento: Memento): void;
+}
+
+const TextEditor: React.FC = () => {
+  const [content, setContent] = useState("");
+  const [history, setHistory] = useState<Memento[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+
+  const save = () => {
+    const memento: Memento = new EditorMemento(content);
+    const newHistory = history.slice(0, currentIndex + 1);
+    setHistory([...newHistory, memento]);
+    setCurrentIndex(currentIndex + 1);
+  };
+
+  const undo = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      const previousMemento = history[currentIndex - 1];
+      setContent(previousMemento.getState());
+    }
+  };
+
+  const redo = () => {
+    if (currentIndex < history.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      const nextMemento = history[currentIndex + 1];
+      setContent(nextMemento.getState());
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
+
+  return (
+    <div>
+      <textarea value={content} onChange={handleChange}></textarea>
+      <button onClick={save}>Save</button>
+      <button onClick={undo}>Undo</button>
+      <button onClick={redo}>Redo</button>
+    </div>
+  );
+};
+
+export default TextEditor;
+```
+
+In this example, we have a TextEditor component that allows users to type and edit text in a textarea. The component provides "Save," "Undo," and "Redo" buttons. The TextEditor component uses an array of mementos to keep track of the state history. When the user clicks the "Save" button, a new memento is created and added to the history array. The "Undo" and "Redo" buttons allow the user to navigate through the history and restore previous states.
+
+#### 2. Checkpoint / Save Points:
+
+Capturing checkpoints or save points in an application's workflow to enable the ability to return to a specific state.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Memento {
+  getState(): string;
+}
+
+class WorkflowMemento implements Memento {
+  private state: string;
+
+  constructor(state: string) {
+    this.state = state;
+  }
+
+  getState(): string {
+    return this.state;
+  }
+}
+
+interface Workflow {
+  getStep(): string;
+  setStep(step: string): void;
+  saveCheckpoint(): Memento;
+  restoreCheckpoint(memento: Memento): void;
+}
+
+const WorkflowManager: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState("");
+  const [checkpoints, setCheckpoints] = useState<Memento[]>([]);
+
+  const saveCheckpoint = () => {
+    const memento: Memento = new WorkflowMemento(currentStep);
+    setCheckpoints([...checkpoints, memento]);
+  };
+
+  const restoreCheckpoint = (memento: Memento) => {
+    setCurrentStep(memento.getState());
+  };
+
+  const handleStepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentStep(e.target.value);
+  };
+
+  const renderCheckpoints = () => {
+    return checkpoints.map((checkpoint, index) => (
+      <button key={index} onClick={() => restoreCheckpoint(checkpoint)}>
+        Checkpoint {index + 1}
+      </button>
+    ));
+  };
+
+  return (
+    <div>
+      <input type='text' value={currentStep} onChange={handleStepChange} />
+      <button onClick={saveCheckpoint}>Save Checkpoint</button>
+      <div>
+        <h4>Checkpoints</h4>
+        {renderCheckpoints()}
+      </div>
+    </div>
+  );
+};
+
+export default WorkflowManager;
+```
+
+In this example, we have a WorkflowManager component that allows users to manage a workflow by setting the current step. The component provides a "Save Checkpoint" button to capture the current step as a memento and a list of buttons to restore checkpoints. The WorkflowManager component uses an array of mementos to store the checkpoints. When a user clicks a checkpoint button, the corresponding memento is retrieved, and the step is restored.
+
+#### 3. State Management:
+
+Managing and restoring the state of complex objects, enabling rollback or recovery in case of errors or failures.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Memento {
+  getState(): CounterState;
+}
+
+interface CounterState {
+  count: number;
+}
+
+class CounterMemento implements Memento {
+  private state: CounterState;
+
+  constructor(state: CounterState) {
+    this.state = state;
+  }
+
+  getState(): CounterState {
+    return this.state;
+  }
+}
+
+interface Counter {
+  getCount(): number;
+  increment(): void;
+  decrement(): void;
+  saveState(): Memento;
+  restoreState(memento: Memento): void;
+}
+
+const CounterComponent: React.FC = () => {
+  const [count, setCount] = useState(0);
+  const [history, setHistory] = useState<Memento[]>([]);
+
+  const increment = () => {
+    setCount((prevCount) => prevCount + 1);
+  };
+
+  const decrement = () => {
+    setCount((prevCount) => prevCount - 1);
+  };
+
+  const saveState = () => {
+    const memento: Memento = new CounterMemento({ count });
+    setHistory((prevHistory) => [...prevHistory, memento]);
+  };
+
+  const restoreState = (memento: Memento) => {
+    const { count } = memento.getState();
+    setCount(count);
+  };
+
+  return (
+    <div>
+      <h3>Counter: {count}</h3>
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+      <button onClick={saveState}>Save State</button>
+      <div>
+        <h4>History</h4>
+        {history.map((memento, index) => (
+          <button key={index} onClick={() => restoreState(memento)}>
+            Restore State {index + 1}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default CounterComponent;
+```
+
+In this example, we have a CounterComponent that manages a counter state. The component allows users to increment or decrement the counter. It provides a "Save State" button to capture the current counter state as a memento and a list of buttons to restore previous states from the history. The CounterComponent maintains a history of mementos to enable the rollback or recovery of the counter state.
+
+### Advantages
+
+- Allows capturing and restoring the internal state of an object without exposing its implementation details.
+- Provides a way to save and restore object states, enabling undo/redo functionality or reverting to previous states.
+- Enhances encapsulation by separating the responsibility of state management from the object itself.
+- Supports checkpointing and state management in complex systems.
+
+### Disadvantages
+
+- Can increase memory usage if the history of mementos grows significantly.
+- Requires careful handling of large or complex state objects to avoid performance issues.
+- May introduce additional complexity when dealing with objects that have a large number of internal states.
