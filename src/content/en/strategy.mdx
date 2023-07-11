@@ -1,0 +1,273 @@
+---
+title: Strategy pattern
+description: Definition and example about the Strategy pattern applied to the frontend
+tags:
+  - strategy-pattern_1
+  - use-cases_2
+  - 1-Strategyful-components_6
+  - 2-workflow-management_6
+  - 3-game-development_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Strategy Pattern
+
+The Strategy pattern is a behavioral design pattern that enables selecting an algorithm or strategy at runtime. It encapsulates a family of interchangeable algorithms and allows the client to switch between them dynamically. This pattern promotes flexibility and extensibility by decoupling the algorithm implementation from the client code.
+
+You can take a quick look at how to use this pattern in React with functional components in the following example:
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+import React, { useState } from "react";
+
+interface Strategy {
+  execute: (input: string) => string;
+}
+
+class StrategyA implements Strategy {
+  execute(input: string): string {
+    return `Strategy A: ${input}`;
+  }
+}
+
+class StrategyB implements Strategy {
+  execute(input: string): string {
+    return `Strategy B: ${input}`;
+  }
+}
+
+const StrategyExample: React.FC = () => {
+  const [currentStrategy, setCurrentStrategy] = useState<Strategy>(
+    () => new StrategyA()
+  );
+  const [input, setInput] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleStrategyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const strategy = e.target.value === "A" ? new StrategyA() : new StrategyB();
+    setCurrentStrategy(strategy);
+  };
+
+  const executeStrategy = () => {
+    const result = currentStrategy.execute(input);
+    alert(result);
+  };
+
+  return (
+    <div>
+      <h4>Strategy Example</h4>
+      <div>
+        <label>Select Strategy:</label>
+        <select onChange={handleStrategyChange}>
+          <option value='A'>Strategy A</option>
+          <option value='B'>Strategy B</option>
+        </select>
+      </div>
+      <div>
+        <label>Input:</label>
+        <input type='text' value={input} onChange={handleInputChange} />
+      </div>
+      <button onClick={executeStrategy}>Execute</button>
+    </div>
+  );
+};
+
+export default StrategyExample;
+```
+
+In this example, we have a StrategyExample component that demonstrates the Strategy pattern. The component allows the user to select a strategy (Strategy A or Strategy B) from a dropdown list and enter an input value. When the user clicks the "Execute" button, the selected strategy's execute method is called with the input value, and the result is displayed in an alert.
+
+### Use cases
+
+By applying the Strategy pattern, you can achieve dynamic behavior and algorithmic variations in your applications. It allows you to encapsulate different strategies into separate classes, making it easy to switch between them at runtime. The Strategy pattern promotes code organization, reusability, and maintainability, enabling you to build flexible and extensible systems.
+
+The Strategy pattern is particularly useful in scenarios as:
+
+#### 1. Strategyful Components:
+
+Implementing a component with different Strategys and behaviors based on its internal Strategy.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Strategy {
+  render: () => JSX.Element;
+}
+
+const StrategyfulComponent: React.FC = () => {
+  const [currentStrategy, setCurrentStrategy] = useState<Strategy>(
+    () => initialStrategy
+  );
+
+  const switchStrategy = () => {
+    setCurrentStrategy((prevStrategy) =>
+      prevStrategy === StrategyA ? StrategyB : StrategyA
+    );
+  };
+
+  return (
+    <div>
+      <h4>Strategyful Component</h4>
+      <button onClick={switchStrategy}>Switch Strategy</button>
+      {currentStrategy.render()}
+    </div>
+  );
+};
+
+const StrategyA: Strategy = {
+  render: () => <p>Strategy A</p>,
+};
+
+const StrategyB: Strategy = {
+  render: () => <p>Strategy B</p>,
+};
+
+export default StrategyfulComponent;
+```
+
+In this example, we have a StrategyfulComponent that maintains an internal Strategy using the useState hook. The component renders different content based on its current Strategy, which is managed by currentStrategy and updated using setCurrentStrategy. The StrategyA and StrategyB objects represent the different Strategys and their corresponding render functions.
+
+#### 2. Workflow Management:
+
+Managing the flow and transitions between different Strategys in a process or workflow.
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Strategy {
+  title: string;
+  description: string;
+  onEnter: () => void;
+  onExit: () => void;
+}
+
+const WorkflowManager: React.FC = () => {
+  const [currentStrategy, setCurrentStrategy] = useState<Strategy>(
+    () => initialWorkflowStrategy
+  );
+
+  const moveToNextStrategy = () => {
+    currentStrategy.onExit();
+    setCurrentStrategy((prevStrategy) =>
+      prevStrategy === StrategyA ? StrategyB : StrategyA
+    );
+  };
+
+  React.useEffect(() => {
+    currentStrategy.onEnter();
+  }, [currentStrategy]);
+
+  return (
+    <div>
+      <h4>Workflow Manager</h4>
+      <p>Title: {currentStrategy.title}</p>
+      <p>Description: {currentStrategy.description}</p>
+      <button onClick={moveToNextStrategy}>Next Strategy</button>
+    </div>
+  );
+};
+
+const StrategyA: Strategy = {
+  title: "Strategy A",
+  description: "This is Strategy A",
+  onEnter: () => {
+    console.log("Entered Strategy A");
+  },
+  onExit: () => {
+    console.log("Exited Strategy A");
+  },
+};
+
+const StrategyB: Strategy = {
+  title: "Strategy B",
+  description: "This is Strategy B",
+  onEnter: () => {
+    console.log("Entered Strategy B");
+  },
+  onExit: () => {
+    console.log("Exited Strategy B");
+  },
+};
+
+const initialWorkflowStrategy: Strategy = StrategyA;
+
+export default WorkflowManager;
+```
+
+In this example, we have a WorkflowManager component that manages a workflow with two Strategys: StrategyA and StrategyB. The current Strategy is stored in currentStrategy and is updated using the setCurrentStrategy function. Each Strategy object defines a title, description, and callbacks for the onEnter and onExit events. The component renders the current Strategy's title and description and provides a button to transition to the next Strategy.
+
+#### 3. Game Development:
+
+Implementing game characters with different behaviors based on their current Strategy (e.g., idle, attacking, defending).
+
+```tsx showLineNumbers
+import React, { useState } from "react";
+
+interface Strategy {
+  performAction: () => void;
+}
+
+const GameCharacter: React.FC = () => {
+  const [currentStrategy, setCurrentStrategy] = useState<Strategy>(
+    () => idleStrategy
+  );
+
+  const startAttack = () => {
+    setCurrentStrategy(attackStrategy);
+  };
+
+  const startDefend = () => {
+    setCurrentStrategy(defendStrategy);
+  };
+
+  const startIdle = () => {
+    setCurrentStrategy(idleStrategy);
+  };
+
+  return (
+    <div>
+      <h4>Game Character</h4>
+      <button onClick={startAttack}>Start Attack</button>
+      <button onClick={startDefend}>Start Defend</button>
+      <button onClick={startIdle}>Start Idle</button>
+      <br />
+      <br />
+      <p>Current Strategy: {currentStrategy.constructor.name}</p>
+      <p>Performing Action: {currentStrategy.performAction()}</p>
+    </div>
+  );
+};
+
+const idleStrategy: Strategy = {
+  performAction: () => "No action performed (Idle Strategy)",
+};
+
+const attackStrategy: Strategy = {
+  performAction: () => "Performing attack action",
+};
+
+const defendStrategy: Strategy = {
+  performAction: () => "Performing defend action",
+};
+
+export default GameCharacter;
+```
+
+In this example, we have a GameCharacter component that represents a game character with different Strategys. The current Strategy is stored in currentStrategy and is updated based on the user's actions (e.g., clicking buttons). Each Strategy object defines a performAction function that describes the behavior for that Strategy. The component renders buttons to trigger different Strategys and displays the current Strategy and the action being performed.In this example, we have a GameCharacter component that represents a game character with different Strategys. The current Strategy is stored in currentStrategy and is updated based on the user's actions (e.g., clicking buttons). Each Strategy object defines a performAction function that describes the behavior for that Strategy. The component renders buttons to trigger different Strategys and displays the current Strategy and the action being performed.
+
+### Advantages
+
+- Promotes code reusability and maintainability by encapsulating algorithms or strategies into separate classes.
+- Enables the dynamic selection of algorithms at runtime, providing flexibility and extensibility.
+- Facilitates the open/closed principle by allowing the addition of new strategies without modifying existing code.
+- Enhances testability and modularity by isolating algorithmic variations from the client code.
+
+### Disadvantages
+
+- Can introduce additional complexity when managing multiple strategies and their configurations.
+- Requires proper selection and management of strategies, as choosing the wrong strategy may impact performance or produce incorrect results.
+- May result in a larger codebase if there are numerous strategies or complex algorithm variations.
