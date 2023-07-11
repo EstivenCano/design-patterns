@@ -1,0 +1,336 @@
+---
+title: Visitor pattern
+description: Definition and example about the Visitor pattern applied to the frontend
+tags:
+  - visitor-pattern_1
+  - use-cases_2
+  - 1-rendering-component_6
+  - 2-shopping-cart-component_6
+  - advantages_2
+  - disadvantages_2
+---
+
+# Visitor Pattern
+
+The visitor pattern or visitor design pattern is a behavioral design pattern that separates an algorithm from the object structure on which it operates. It describes a way to add new operations to existing object structures without modifying the structures themselves. This characteristic makes visitor patterns a way to implement the open/closed principle (OCP).
+
+The visitor pattern consists of two main components:
+
+- The element interface that defines an accept method that takes a visitor as an argument.
+- The visitor interface that defines a visit method for each concrete element class.
+
+The element interface is implemented by the classes that make up the object structure. The accept method allows the element to accept a visitor and invoke its visit method. The visitor interface is implemented by the classes that provide the specific operations on the elements. The visit method contains the logic to perform the operation on the element
+
+The visitor pattern is useful when you want to define new operations on an object structure without changing its classes, especially when the object structure consists of many unrelated classes. It also helps to avoid adding new methods to the element classes for each new operation, which would violate the single responsibility principle (SRP)
+
+### Use cases
+
+Here are some use cases and examples of the visitor pattern in React, TypeScript and functional components:
+
+#### 1. Rendering component
+
+Suppose you want to create a reusable component that renders different types of data in different formats. However, you want to allow different components to have different rendering logic and styles. You can use the visitor pattern to achieve this.
+
+First, you create an element interface that defines an accept method that takes a visitor as an argument:
+
+```tsx showLineNumbers
+// Element.tsx
+import React from "react";
+
+// Define the visitor type
+export type Visitor = {
+  visitString: (value: string) => JSX.Element;
+  visitNumber: (value: number) => JSX.Element;
+  visitBoolean: (value: boolean) => JSX.Element;
+};
+
+// Define the element type
+export type Element = {
+  accept: (visitor: Visitor) => JSX.Element;
+};
+
+// Define the string element function
+export function StringElement({ value }: { value: string }): Element {
+  // Return an object that implements the accept method
+  return {
+    accept(visitor: Visitor): JSX.Element {
+      return visitor.visitString(value);
+    },
+  };
+}
+
+// Define the number element function
+export function NumberElement({ value }: { value: number }): Element {
+  // Return an object that implements the accept method
+  return {
+    accept(visitor: Visitor): JSX.Element {
+      return visitor.visitNumber(value);
+    },
+  };
+}
+
+// Define the boolean element function
+export function BooleanElement({ value }: { value: boolean }): Element {
+  // Return an object that implements the accept method
+  return {
+    accept(visitor: Visitor): JSX.Element {
+      return visitor.visitBoolean(value);
+    },
+  };
+}
+```
+
+Next, you create concrete visitor functions that provide the specific rendering logic for each element type:
+
+```tsx showLineNumbers
+// PlainVisitor.tsx
+import React from "react";
+import { Visitor } from "./Element";
+
+// Define the plain visitor function
+export function PlainVisitor(): Visitor {
+  // Return an object that implements the visitor interface
+  return {
+    // Implement the visitString method
+    visitString(value: string): JSX.Element {
+      return <span>{value}</span>;
+    },
+
+    // Implement the visitNumber method
+    visitNumber(value: number): JSX.Element {
+      return <span>{value}</span>;
+    },
+
+    // Implement the visitBoolean method
+    visitBoolean(value: boolean): JSX.Element {
+      return <span>{value ? "Yes" : "No"}</span>;
+    },
+  };
+}
+```
+
+```tsx showLineNumbers
+// FancyVisitor.tsx
+import React from "react";
+import { Visitor } from "./Element";
+
+// Define the fancy visitor function
+export function FancyVisitor(): Visitor {
+  // Return an object that implements the visitor interface
+  return {
+    // Implement the visitString method
+    visitString(value: string): JSX.Element {
+      return <strong>{value.toUpperCase()}</strong>;
+    },
+
+    // Implement the visitNumber method
+    visitNumber(value: number): JSX.Element {
+      return <em>{value.toFixed(2)}</em>;
+    },
+
+    // Implement the visitBoolean method
+    visitBoolean(value: boolean): JSX.Element {
+      return (
+        <span style={{ color: value ? "green" : "red" }}>
+          {value ? "✔️" : "❌"}
+        </span>
+      );
+    },
+  };
+}
+```
+
+Finally, you can use these functions in your app:
+
+```tsx showLineNumbers
+// App.tsx
+import React from "react";
+import { StringElement, NumberElement, BooleanElement } from "./Element";
+import { PlainVisitor, FancyVisitor } from "./Visitor";
+
+function App() {
+  // Create some elements with different types of data
+  const elements = [
+    StringElement({ value: "Hello" }),
+    NumberElement({ value: 3.14 }),
+    BooleanElement({ value: true }),
+  ];
+
+  // Create some visitors with different rendering styles
+  const visitors = [PlainVisitor(), FancyVisitor()];
+
+  // Render the elements using the visitors
+  return (
+    <div>
+      {visitors.map((visitor, index) => (
+        <div key={index}>
+          {elements.map((element) => element.accept(visitor))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default App;
+```
+
+#### 2. Shopping cart component:
+
+Suppose you want to create a reusable component that calculates the total price of different types of items in a shopping cart. However, you want to allow different components to have different pricing and discount logic for each item type. You can use the visitor pattern to achieve this.
+
+First, you create an element interface that defines an accept method that takes a visitor as an argument:
+
+```tsx showLineNumbers
+// Element.tsx
+import React from "react";
+
+// Define the visitor type
+export type Visitor = {
+  visitBook: (book: Book) => number;
+  visitFruit: (fruit: Fruit) => number;
+};
+
+// Define the element type
+export type Element = {
+  accept: (visitor: Visitor) => number;
+};
+
+// Define the book type
+export type Book = {
+  price: number;
+  isbn: string;
+};
+
+// Define the fruit type
+export type Fruit = {
+  price: number;
+  name: string;
+};
+
+// Define the book element function
+export function BookElement({ price, isbn }: Book): Element {
+  // Return an object that implements the accept method
+  return {
+    accept(visitor: Visitor): number {
+      return visitor.visitBook({ price, isbn });
+    },
+  };
+}
+
+// Define the fruit element function
+export function FruitElement({ price, name }: Fruit): Element {
+  // Return an object that implements the accept method
+  return {
+    accept(visitor: Visitor): number {
+      return visitor.visitFruit({ price, name });
+    },
+  };
+}
+```
+
+Next, you create concrete visitor functions that provide the specific pricing and discount logic for each item type:
+
+```tsx showLineNumbers
+// RegularVisitor.tsx
+import React from "react";
+import { Visitor, Book, Fruit } from "./Element";
+
+// Define the regular visitor function
+export function RegularVisitor(): Visitor {
+  // Return an object that implements the visitor interface
+  return {
+    // Implement the visitBook method
+    visitBook(book: Book): number {
+      // Apply a 10% discount if the book price is more than $50
+      if (book.price > 50) {
+        return book.price * 0.9;
+      } else {
+        return book.price;
+      }
+    },
+
+    // Implement the visitFruit method
+    visitFruit(fruit: Fruit): number {
+      // No discount for fruits
+      return fruit.price;
+    },
+  };
+}
+```
+
+```tsx showLineNumbers
+// VIPVisitor.tsx
+import React from "react";
+import { Visitor, Book, Fruit } from "./Element";
+
+// Define the VIP visitor function
+export function VIPVisitor(): Visitor {
+  // Return an object that implements the visitor interface
+  return {
+    // Implement the visitBook method
+    visitBook(book: Book): number {
+      // Apply a 20% discount for all books
+      return book.price * 0.8;
+    },
+
+    // Implement the visitFruit method
+    visitFruit(fruit: Fruit): number {
+      // Apply a 5% discount for all fruits
+      return fruit.price * 0.95;
+    },
+  };
+}
+```
+
+Finally, you can use these functions in your app:
+
+```tsx showLineNumbers
+// App.tsx
+import React from "react";
+import { BookElement, FruitElement } from "./Element";
+import { RegularVisitor, VIPVisitor } from "./Visitor";
+
+function App() {
+  // Create some items with different types and prices
+  const items = [
+    BookElement({ price: 60, isbn: "978-3-16-148410-0" }),
+    BookElement({ price: 30, isbn: "978-1-56619-909-4" }),
+    FruitElement({ price: 10, name: "Banana" }),
+    FruitElement({ price: 5, name: "Apple" }),
+  ];
+
+  // Create some visitors with different pricing and discount logic
+  const visitors = [RegularVisitor(), VIPVisitor()];
+
+  // Calculate the total price for each visitor using the visitor pattern
+  return (
+    <div>
+      {visitors.map((visitor, index) => (
+        <div key={index}>
+          <h3>{visitor.constructor.name}</h3>
+          <p>
+            Total: $
+            {items.reduce((total, item) => total + item.accept(visitor), 0)}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Advantages
+
+- Allows you to add new operations to an object structure without modifying the classes of the elements.
+- It helps you to avoid adding new methods to the element classes for each new operation, which would violate the single responsibility principle (SRP).
+- Regroups actions common to many elements in one single visitor class, which makes the code easier to read if you want to know the code for one action specifically.
+- The visitor pattern is probably the fastest method to implement double dispatch in terms of CPU time, if you don’t have a language that supports it natively or efficiently.
+
+### Disadvantages
+
+- It can modify your elements since an instance of the element is sent to the visitor, which can lead to side effects. This can be fixed by making your objects immutable.
+- It spreads the code of the element objects in all the visitor objects, which makes the code harder to read if you want to look at the code for one element object.
+- The visitor pattern necessitates one new visitor class for every action, which can increase the number of classes in your project.
+- The visitor pattern is invasive because it requires the element classes to provide an accept method that takes a visitor as an argument. If you need to work with a third-party object structure that doesn’t provide accept methods, then you can’t use the visitor pattern.
