@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className='flex max-w-7xl flex-col items-center py-4 md:py-8 md:px-10 px-4'>
       <h1 className='text-primary text-2xl font-bold'>Desing Patterns</h1>
-      <p>A short demonstration</p>
+      <p>Applied to Frontend</p>
       {patterns.map(({ category, list }) => (
         <section
           key={category}
@@ -24,7 +24,7 @@ export default function Home() {
           </Button>
           {list.map((pattern) => (
             <Link href={pattern.link} key={pattern.id}>
-              <Card className='w-56 h-full hover:border-destructive dark:hover:border-red-400 hover:cursor-pointer'>
+              <Card className='w-72 sm:w-56 h-full hover:border-destructive dark:hover:border-red-400 hover:cursor-pointer'>
                 <CardHeader>
                   <CardTitle className='text-center text-xl capitalize'>
                     {pattern.name.replaceAll("-", " ")}
