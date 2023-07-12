@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 interface Props {
   id: string;
@@ -15,7 +15,7 @@ const RightLink = ({ id }: Props) => {
   });
   const isVisible = !!entry?.isIntersecting;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     element.current = document.getElementById(id);
   }, [id]);
 
