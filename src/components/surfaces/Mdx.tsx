@@ -173,7 +173,7 @@ const components = {
   }: React.ImgHTMLAttributes<HTMLTableCellElement>) => (
     <td
       className={cn(
-        "border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
+        "border p-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
         className
       )}
       {...props}
@@ -191,14 +191,14 @@ const components = {
   code: ({ className, ...props }: React.ImgHTMLAttributes<HTMLElement>) => (
     <code
       className={cn(
-        "rounded flex flex-col overflow-x-auto py-[0.2rem] font-mono text-sm",
+        "rounded flex flex-col overflow-x-auto py-[0.2rem] font-mono text-xs sm:text-sm",
         className
       )}
       {...props}
     />
   ),
   span: ({ className, ...props }: React.ImgHTMLAttributes<HTMLElement>) => (
-    <span className={cn("w-5", className)} {...props} />
+    <span className={cn("w-4", className)} {...props} />
   ),
   Callout,
   Card: MdxCard,

@@ -18,7 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={`${inter.className} flex flex-col items-center`}>
+      <body
+        className={`${inter.className} flex flex-col items-center overflow-x-hidden`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <AppBar />
           {children}
