@@ -1,34 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Design Patterns applied to Frontend
 
-## Getting Started
+This project explores various design patterns and their applications in Frontend development. Design patterns are proven solutions to common software design problems, and understanding how they can be applied to Frontend can help improve code organization, reusability, and maintainability.
 
-First, run the development server:
+You can have a look at the web page with all the contents and examples [here](https://design-patterns-amber.vercel.app).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Use Cases
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Design patterns can be useful in various frontend development scenarios, including:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Creating flexible and customizable UI components.
+2. Managing complex workflows or state transitions.
+3. Adapting external libraries or APIs with different interfaces.
+4. Implementing dynamic behaviors based on user interactions.
+5. Ensuring separation of concerns and code modularity.
+6. Optimizing resource usage and performance.
+7. Implementing consistent coding standards and practices.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**Note**: The code examples provided in this project serve as illustrations and may not cover all possible variations or implementations of each design pattern.
