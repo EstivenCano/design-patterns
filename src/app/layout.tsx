@@ -2,7 +2,6 @@ import { AppBar } from "@/components/surfaces/AppBar";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import TopPage from "@/components/providers/TopPage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +20,8 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={`${inter.className} flex flex-col items-center`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <TopPage>
-            <AppBar />
-            {children}
-          </TopPage>
+          <AppBar />
+          {children}
         </ThemeProvider>
       </body>
     </html>

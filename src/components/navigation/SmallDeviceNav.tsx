@@ -1,12 +1,8 @@
 import { FC } from "react";
-import { CircleDashed, Edit } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { repo } from "@/lib/constants";
 import {
   Select,
   SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
