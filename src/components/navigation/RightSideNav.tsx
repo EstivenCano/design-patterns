@@ -1,16 +1,19 @@
 import { FC } from "react";
-import { CircleDashed } from "lucide-react";
+import { CircleDashed, Edit } from "lucide-react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { repo } from "@/lib/constants";
 
 interface Props {
   tags?: Array<string>;
+  page?: string;
 }
 
 const RightLink = dynamic(() => import("./RightLink"));
 
-export const RightSideNav: FC<Props> = ({ tags }) => {
+export const RightSideNav: FC<Props> = ({ tags, page }) => {
   return (
-    <aside className='w-full h-full sticky top-20 self-start pl-8 lg:flex flex-col gap-4 hidden max-w-xs overflow-hidden overflow-y-auto'>
+    <aside className='w-full h-full sticky top-20 self-start pl-8 lg:flex flex-col gap-4 hidden max-w-sm overflow-hidden overflow-y-auto'>
       <h2 className='font-bold'>On this page</h2>
       <div className='flex flex-col capitalize gap-2'>
         {tags &&
@@ -24,6 +27,18 @@ export const RightSideNav: FC<Props> = ({ tags }) => {
               </span>
             );
           })}
+      </div>
+      <h2 className='font-bold'>More</h2>
+      <div className='flex flex-col gap-2'>
+        <span
+          className={`flex items-center text-sm gap-2 hover:text-foreground text-foreground/80`}>
+          <Edit size={15} />
+          <Link
+            href={`${repo}/blob/main/src/content/en/${page}.mdx`}
+            target='_blank'>
+            Edit this page
+          </Link>
+        </span>
       </div>
     </aside>
   );

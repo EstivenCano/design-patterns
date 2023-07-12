@@ -23,7 +23,7 @@ export default async function Pattern({
   return (
     <main className='flex relative min-h-screen max-w-5xl items-center py-8 px-10'>
       <Mdx code={doc.body.code} />
-      <RightSideNav tags={doc.tags} />
+      <RightSideNav tags={doc.tags} page={pattern} />
     </main>
   );
 }

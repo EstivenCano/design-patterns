@@ -9,7 +9,6 @@ interface Props {
 }
 
 const RightLink = ({ id }: Props) => {
-  ``;
   const element = useRef<Element | null>(null);
   const entry = useIntersectionObserver(element, {
     rootMargin: "-50px",
@@ -23,7 +22,7 @@ const RightLink = ({ id }: Props) => {
   return (
     <Link
       href={`#${id}`}
-      className={`ml-1 text-sm hover:text-foreground truncate transition-colors duration-150 ${
+      className={`ml-1 text-sm hover:text-foreground truncate transition-colors duration-75 ${
         isVisible ? "text-red-600 dark:text-red-400" : "text-foreground/80"
       }`}>
       {id.replaceAll("-", " ")}

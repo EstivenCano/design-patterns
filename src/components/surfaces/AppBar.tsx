@@ -1,3 +1,4 @@
+import { repo } from "@/lib/constants";
 import { Logo } from "../../../public/icons/Logo";
 import { ModeToggle } from "../inputs/ChangeTheme";
 import { GithubButton } from "../inputs/GithubButton";
@@ -11,7 +12,7 @@ export const AppBar = () => {
         <div className='flex gap-4 w-full justify-end'>
           <SearchPatterns />
           <div className='flex flex-shrink-0'>
-            <GithubButton />
+            <GithubButton href={repo} />
             <ModeToggle />
           </div>
         </div>
