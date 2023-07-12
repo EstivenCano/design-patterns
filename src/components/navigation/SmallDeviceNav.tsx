@@ -13,7 +13,7 @@ interface Props {
 
 export const SmallDeviceNav: FC<Props> = ({ tags }) => {
   return (
-    <div className='w-full lg:hidden border-t-2 z-10 px-4 md:px-8 fixed bottom-0 py-1 bg-background'>
+    <div className='w-full lg:hidden border-t-2 z-10 px-4 fixed left-0 bottom-0 py-1 bg-background'>
       <Select>
         <SelectTrigger className='truncate self-start'>
           <SelectValue placeholder='On this page' />

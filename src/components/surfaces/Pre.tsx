@@ -9,17 +9,16 @@ export const Pre = ({
   ...props
 }: React.ImgHTMLAttributes<HTMLElement>) => {
   const { theme } = useTheme();
+
+  const hideColors = () => {
+    if (theme === "light") return "data-[theme=dark]:hidden";
+    if (theme === "dark") return "data-[theme=light]:hidden";
+
+    return "data-[theme=light]:hidden";
+  };
+
   return (
-    <pre
-      className={cn(
-        `${
-          theme === "light"
-            ? "data-[theme=dark]:hidden"
-            : "data-[theme=light]:hidden"
-        }`,
-        className
-      )}
-      {...props}>
+    <pre className={cn(hideColors(), className)} {...props}>
       {children}
     </pre>
   );
