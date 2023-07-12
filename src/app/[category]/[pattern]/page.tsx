@@ -21,7 +21,7 @@ export default async function Pattern({
   const doc = await getDocFromParams(pattern);
 
   return (
-    <main className='flex relative min-h-screen max-w-5xl items-center py-8 px-10'>
+    <main className='flex relative min-h-screen max-w-5xl items-center py-4 md:py-8 md:px-10 px-4'>
       <Mdx code={doc.body.code} />
       <RightSideNav tags={doc.tags} page={pattern} />
     </main>
