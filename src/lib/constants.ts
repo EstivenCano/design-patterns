@@ -44,7 +44,7 @@ export const patterns = [
     list: [
       {
         id: 1,
-        name: "Adapter",
+        name: "adapter",
         link: "/structural-patterns/adapter",
         image:
           "https://refactoring.guru/images/patterns/cards/adapter-mini.png",
@@ -150,7 +150,7 @@ export const patterns = [
       },
       {
         id: 9,
-        name: "template Method",
+        name: "template-method",
         link: "/behavioral-patterns/template-method",
         image:
           "https://refactoring.guru/images/patterns/cards/template-method-mini.png",

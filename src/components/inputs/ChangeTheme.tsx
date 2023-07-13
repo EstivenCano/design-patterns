@@ -31,7 +31,8 @@ export function ModeToggle() {
           <DropdownMenuItem
             key={t}
             className={`capitalize ${
-              theme === t && "bg-red-200 dark:bg-red-400"
+              theme === t &&
+              "bg-destructive/5 dark:bg-red-400/10 border-r-4 border-red-400/50"
             }`}
             onClick={() => setTheme(t)}>
             {t}

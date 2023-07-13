@@ -23,9 +23,9 @@ export default async function Pattern({
   const doc = await getDocFromParams(pattern);
 
   return (
-    <main className='flex relative flex-col lg:flex-row min-h-screen max-w-7xl sm:gap-4 gap-8  space-y-4'>
+    <main className='flex flex-nowrap relative flex-col md:flex-row min-h-screen max-w-7xl sm:gap-4 gap-8 px-2 space-y-4'>
       <SmallDeviceNav tags={doc.tags} />
-      <LeftSideNav />
+      <LeftSideNav patternName={pattern} />
       <Mdx code={doc.body.code} />
       <RightSideNav tags={doc.tags} page={pattern} />
     </main>
