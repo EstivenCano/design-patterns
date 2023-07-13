@@ -18,7 +18,7 @@ export const Pre = ({
   };
 
   return (
-    <pre className={cn(hideColors(), className)} {...props}>
+    <pre className={cn(`${hideColors()} group`, className)} {...props}>
       {children}
     </pre>
   );
