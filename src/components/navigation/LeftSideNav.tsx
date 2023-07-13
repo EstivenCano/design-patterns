@@ -22,7 +22,7 @@ export const LeftSideNav: FC<Props> = ({ patternName }) => {
     const currentPattern = document.getElementById(patternName);
 
     ref.current?.scroll({
-      top: currentPattern?.getBoundingClientRect().top || +window.scrollY,
+      top: currentPattern?.getBoundingClientRect().top || 0 + window.scrollY,
     });
   }, [patternName]);
 

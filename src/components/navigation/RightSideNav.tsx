@@ -14,7 +14,7 @@ const RightLink = dynamic(() => import("./RightLink"));
 export const RightSideNav: FC<Props> = ({ tags, page }) => {
   return (
     <div className='group'>
-      <aside className='w-full pr-2 min-w-max h-full md:max-h-[calc(100vh-140px)] max-h-[calc(100vh-85px)] sticky top-20 self-start pl-8 lg:flex flex-col gap-4 hidden max-w-sm overflow-y-auto'>
+      <aside className='w-full pr-2 h-full md:max-h-[calc(100vh-140px)] max-h-[calc(100vh-85px)] sticky top-20 self-start pl-8 lg:flex flex-col gap-4 hidden max-w-sm overflow-y-auto'>
         <h2 className='font-bold'>On this page</h2>
         <div className='flex flex-col capitalize gap-2'>
           {tags &&
