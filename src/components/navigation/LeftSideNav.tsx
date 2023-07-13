@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "../ui/accordion";
-import { FC, Fragment, useEffect, useRef } from "react";
+import { FC, Fragment, useLayoutEffect, useRef } from "react";
 import React from "react";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ interface Props {
 export const LeftSideNav: FC<Props> = ({ patternName }) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const currentPattern = document.getElementById(patternName);
 
     ref.current?.scroll({
