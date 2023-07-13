@@ -212,7 +212,7 @@ export function Mdx({ code }: MdxProps) {
   const Component = useMDXComponent(code);
 
   return (
-    <div className='mdx pb-10'>
+    <div className='mdx max-w-2xl pb-10'>
       <Component components={components} />
     </div>
   );

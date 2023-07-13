@@ -99,4 +99,34 @@
   code[data-line-numbers-max-digits="3"] > [data-line]::before {
     width: 1.8rem;
   }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    @apply group-hover:bg-background;
+    border-radius: 5px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply group-hover:bg-foreground/10 group-hover:hover:bg-foreground/20;
+    border-radius: 5px;
+  }
+  body::-webkit-scrollbar {
+    @apply w-2.5;
+  }
+
+  /* Track */
+  body::-webkit-scrollbar-track {
+    @apply bg-foreground/20;
+  }
+
+  /* Handle */
+  body::-webkit-scrollbar-thumb {
+    @apply bg-foreground/30 hover:bg-foreground/40;
+    border-radius: 5px;
+  }
 }

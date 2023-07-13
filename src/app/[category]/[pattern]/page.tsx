@@ -1,3 +1,4 @@
+import { LeftSideNav } from "@/components/navigation/LeftSideNav";
 import { RightSideNav } from "@/components/navigation/RightSideNav";
 import { SmallDeviceNav } from "@/components/navigation/SmallDeviceNav";
 import { Mdx } from "@/components/surfaces/Mdx";
@@ -22,8 +23,9 @@ export default async function Pattern({
   const doc = await getDocFromParams(pattern);
 
   return (
-    <main className='flex relative flex-col lg:flex-row min-h-screen max-w-5xl py-2 lg:py-4 md:px-10 px-4'>
+    <main className='flex relative flex-col lg:flex-row min-h-screen max-w-7xl sm:gap-4 gap-8  space-y-4'>
       <SmallDeviceNav tags={doc.tags} />
+      <LeftSideNav />
       <Mdx code={doc.body.code} />
       <RightSideNav tags={doc.tags} page={pattern} />
     </main>
