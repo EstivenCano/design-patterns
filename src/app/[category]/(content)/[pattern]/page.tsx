@@ -14,6 +14,16 @@ async function getDocFromParams(slug: string) {
   return doc;
 }
 
+export async function generateMetadata({
+  params: { pattern },
+}: {
+  params: { pattern: string };
+}) {
+  const doc = await getDocFromParams(pattern);
+
+  return { title: doc.title, description: doc.description };
+}
+
 export default async function Pattern({
   params: { pattern },
 }: {
